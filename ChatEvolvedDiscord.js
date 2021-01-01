@@ -57,7 +57,7 @@ function execute(message, getMessageURL) {
 // Send messages from Discord to Webdis
  try {
   var user = message.author.username;
-  var content = message.content;
+  var content = encodeURIComponent(message.content);
   var sendMessageWebdis = sendMessageURL + "\<RichColor%20Color=\"0.5,%200.5,%200.5,%201\"\>[Discord]%20\(" + user + "\):\<%2F\>%20" + content;
   sendMessage(message, sendMessageWebdis);
  } catch (err) {

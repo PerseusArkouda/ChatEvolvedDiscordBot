@@ -24,6 +24,34 @@ const client = new Discord.Client();
 
 client.once("ready", () => {
  client.user.setActivity("ChatEvolved Ark Cross Chat", {type: "Type"});
+
+ // Read messages from Webdis every 0.2s and post to Discord if any new comes up
+ setInterval(() => lastMessage(getMessageURL, function(body) {
+  Object.keys(body).forEach(e => result=`${body[e]}`);
+  result = result.replace(/,<.*/, "");
+  result = result.replace(/<.*\">/, "");
+  result = result.replace(/<\/>/, "");
+  if (result !== previousResult && result !== olderResult || previousResult === "") {
+   if (result.indexOf("[Discord]") >= 0) return;
+   client.channels.cache.get(channelID).send(result);
+   //console.log(result);
+   previousResult = result;
+   olderResult = previousResult;
+  }
+ return;
+ }), 200);
+
+function lastMessage(getMessageURL, callback) {
+  request({
+   url: getMessageURL,
+   json: true
+  }, function (error, response, body) {
+   if (!error && response.statusCode === 200) {
+    callback(body);
+   }
+  });
+ }
+
  console.log("Ready!");
 });
 
@@ -57,40 +85,13 @@ function execute(message, getMessageURL) {
 
 // Send messages from Discord to Webdis
  try {
-  var user = message.author.username;
+  var user = encodeURIComponent(message.author.username);
   var content = encodeURIComponent(message.content);
   var sendMessageWebdis = sendMessageURL + "\<RichColor%20Color=\"0.5,%200.5,%200.5,%201\"\>[Discord]%20\(" + user + "\):\<%2F\>%20" + content;
   sendMessage(message, sendMessageWebdis);
  } catch (err) {
   console.log(err);
  }
-
- // Read messages from Webdis every 0.2s and post to Discord if any new comes up
- function lastMessage(getMessageURL, callback) {
-  request({
-   url: getMessageURL,
-   json: true
-  }, function (error, response, body) {
-   if (!error && response.statusCode === 200) {
-    callback(body);
-   }
-  });
- }
-
- setInterval(() => lastMessage(getMessageURL, function(body) {
-  Object.keys(body).forEach(e => result=`${body[e]}`);
-  result = result.replace(/,<.*/, "");
-  result = result.replace(/<.*\">/, "");
-  result = result.replace(/<\/>/, "");
-  if (result !== previousResult && result !== olderResult || previousResult === "") {
-   if (result.indexOf("[Discord]") >= 0) return;
-   client.channels.cache.get(channelID).send(result);
-   //console.log(result);
-   previousResult = result;
-   olderResult = previousResult;
-  }
- return;
- }), 200);
 }
 
 function test(message) {

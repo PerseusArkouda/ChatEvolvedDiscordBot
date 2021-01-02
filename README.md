@@ -77,7 +77,8 @@ To make it easier to launch the bot open Notepad and type:
 ```
 node ChatEvolvedDiscord.js >> ChatEvolvedDiscord-logs.txt 2>> ChatEvolvedDiscord-errors.txt
 ```
-Save as ChatEvolvedDiscordBot.bat Now the bot can run just with double click and also will output to ChatEvolvedDiscord-logs.txt and the errors to ChatEvolvedDiscord-errors.txt.  
+Save as ChatEvolvedDiscordBot.bat  
+Now the bot can run just with double click and also will output to ChatEvolvedDiscord-logs.txt and the errors to ChatEvolvedDiscord-errors.txt.  
 Also you can drop it to your startup items to start automatically with Windows.  
 To do that press Windows key + R (Run) and type:
 ```
@@ -86,8 +87,12 @@ shell:startup
 ___
 
 ##### - Linux notes:
-For distributions with systemd (like Ubuntu) you can create a service file for the bot. First create a script. Cd inside ChatEvolvedDiscordBot directory and type:
-> nano ChatEvolvedDiscord.sh
+For distributions with systemd (like Ubuntu) you can create a service file for the bot.  
+First create a script.  
+Cd inside ChatEvolvedDiscordBot directory and type:
+```
+nano ChatEvolvedDiscord.sh
+```
 Paste:
 ```
     #!/bin/bash
@@ -100,7 +105,7 @@ Press: Ctrl + O (Save), Ctrl + X (Close) Type:
 ```
 chmod +x ChatEvolvedDiscord.sh
 ```
-Then:
+Type:
 ```
 nano /lib/systemd/system/ChatEvolvedDiscord.service
 ```

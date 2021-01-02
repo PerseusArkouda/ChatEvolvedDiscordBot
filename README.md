@@ -124,6 +124,9 @@ Press: Ctrl + O (Save), Ctrl + X (Close) Type:
 ```
 sudo systemctl enable ChatEvolvedDiscord.service
 sudo systemctl daemon-reload
-sudo systemctl start ChatEvolvedDiscord.service Verify:
+sudo systemctl start ChatEvolvedDiscord.service
+```
+Verify:
+```
 sudo systemctl status ChatEvolvedDiscord.service
 ```

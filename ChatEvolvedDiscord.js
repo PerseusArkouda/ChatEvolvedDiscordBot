@@ -17,15 +17,14 @@ const Discord = require("discord.js");
 // Required HTTP request npm module
 var request = require('request');
 
-var result;
-var previousResult;
-var olderResult;
 const client = new Discord.Client();
 
 client.once("ready", () => {
- client.user.setActivity("ChatEvolved Ark Cross Chat", {type: "Type"});
-
+ client.user.setActivity("ChatEvolvedDiscord", {type: "Type"});
  // Read messages from Webdis every 0.2s and post to Discord if any new comes up
+ var result;
+ var previousResult;
+ var olderResult;
  setInterval(() => lastMessage(getMessageURL, function(body) {
   Object.keys(body).forEach(e => result=`${body[e]}`);
   result = result.replace(/,<.*/, "");
@@ -38,7 +37,6 @@ client.once("ready", () => {
    previousResult = result;
    olderResult = previousResult;
   }
- return;
  }), 200);
 
 function lastMessage(getMessageURL, callback) {
@@ -68,21 +66,15 @@ client.on("message", async message => {
  if (message.author.bot) return;
  // Ignores other channel messages than the one specified here
  if (message.channel.id !== channelID) return;
-
  // ~test in specified channel will return "Testing Ok" from the bot to verify it's running
  if (message.content.startsWith(`${prefix}test`)) {
   test(message);
-  return;
  }
-
  // Start executing commands
  execute(message, getMessageURL);
 });
 
 function execute(message, getMessageURL) {
- var args = message.content.split(" ").slice(1);
- var args = args.toString().replace(/,/g," ");
-
 // Send messages from Discord to Webdis
  try {
   var user = encodeURIComponent(message.author.username);
@@ -96,7 +88,6 @@ function execute(message, getMessageURL) {
 
 function test(message) {
  client.channels.cache.get(channelID).send("Testing ok!");
- return;
 }
 
 
@@ -106,7 +97,6 @@ function sendMessage(message, sendMessageWebdis) {
     console.log(body)
   }
  });
- return;
 }
 
 client.login(token);

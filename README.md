@@ -1,5 +1,5 @@
 # ChatEvolvedDiscordBot
-Discord integration for ARK's Chat Evolved mod
+Discord integration for ARK's Chat Evolved mod  
 https://steamcommunity.com/sharedfiles/filedetails/?id=1551199162
 
 - It will send/receive messages to/from specified Discord channel back/to your ARK servers.

@@ -110,7 +110,7 @@ Type:
 ```
 nano /lib/systemd/system/ChatEvolvedDiscord.service
 ```
-Paste and edit USER and GROUP with your username and also the path to the script:
+Paste and edit User, Group and ExecStart path with your username:
 ```
     [Unit]
     Description=Chat Evolved Discord Bot
@@ -120,8 +120,8 @@ Paste and edit USER and GROUP with your username and also the path to the script
     RestartSec=5
     StartLimitInterval=60s
     StartLimitBurst=3
-    User=GROUP
-    Group=GROUP
+    User=USER
+    Group=USER
     ExecStart=/home/USER/ChatEvolvedDiscordBot/ChatEvolvedDiscord.sh
     ExecStop=/bin/kill -2 $MAINPID
     [Install]

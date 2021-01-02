@@ -2,10 +2,10 @@
 Discord integration for ARK's Chat Evolved mod  
 https://steamcommunity.com/sharedfiles/filedetails/?id=1551199162
 
-- It will send/receive messages to/from specified Discord channel back/to your ARK servers.
+- It will send/receive messages to/from specified Discord channel back/to your ARK servers
 
 
-### Instructions for fully working Chat Evolved mod with ChatEvolvedDiscordBot.
+### Instructions for fully working Chat Evolved mod with ChatEvolvedDiscordBot
 ### 1) Install Docker
 (Required enabled Virtualization in your BIOS/UEFI.)
 #### Windows:
@@ -24,9 +24,9 @@ docker run -d -p 7379:7379 -e LOCAL_REDIS=true anapsix/webdis
 - Test if everything is ok  
 Type in terminal/cmd: 
 ```
-curl http://127.0.0.1:7379/SET/hello/world Result
+curl http://127.0.0.1:7379/SET/hello/world
 ```
-should be:
+Result should be:
 ```
 {"SET":[true,"OK"]}
 ```

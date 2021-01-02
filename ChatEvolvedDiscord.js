@@ -31,7 +31,7 @@ client.once("ready", () => {
   result = result.replace(/,<.*/, "");
   result = result.replace(/<.*\">/, "");
   result = result.replace(/<\/>/, "");
-  if (result !== previousResult && result !== olderResult || previousResult === "") {
+  if (result !== previousResult && result !== olderResult) {
    if (result.indexOf("[Discord]") >= 0) return;
    client.channels.cache.get(channelID).send(result);
    //console.log(result);

@@ -5,7 +5,7 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=1551199162
 - It will send/receive messages to/from specified Discord channel back/to your ARK servers.
 
 
-## Instructions for fully working Chat Evolved mod with ChatEvolvedDiscordBot.
+### Instructions for fully working Chat Evolved mod with ChatEvolvedDiscordBot.
 ### 1) Install Docker
 (Required enabled Virtualization in your BIOS/UEFI.)
 #### Windows:

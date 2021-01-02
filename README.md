@@ -11,7 +11,7 @@ Discord integration for ARK's Chat Evolved mod
 Leave everything default on setup. It may ask to enable Hype-V. Say yes. https://hub.docker.com/editions/community/docker-ce-desktop-windows
 #### Linux:
 Install via your package manager. Ubuntu:
-    sudo apt install docker
+> sudo apt install docker <
 ### 2) Install Redis and Webdis for Docker
 In terminal or cmd (Windows) type: docker run -d -p 7379:7379 -e LOCAL_REDIS=true anapsix/webdis - Test if everything is ok Type in terminal/cmd: curl http://127.0.0.1:7379/SET/hello/world Result 
 should be:

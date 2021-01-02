@@ -19,6 +19,7 @@ var request = require('request');
 
 var result;
 var previousResult;
+var olderResult;
 const client = new Discord.Client();
 
 client.once("ready", () => {
@@ -81,11 +82,12 @@ function execute(message, getMessageURL) {
   result = result.replace(/,<.*/, "");
   result = result.replace(/<.*\">/, "");
   result = result.replace(/<\/>/, "");
-  if (result !== previousResult || previousResult === "") {
+  if (result !== previousResult && result !== olderResult || previousResult === "") {
    if (result.indexOf("[Discord]") >= 0) return;
    client.channels.cache.get(channelID).send(result);
    //console.log(result);
    previousResult = result;
+   olderResult = previousResult;
   }
  return;
  }), 200);

@@ -3,7 +3,7 @@ Discord integration for ARK's Chat Evolved mod
 https://steamcommunity.com/sharedfiles/filedetails/?id=1551199162
 
 - It will send/receive messages to/from specified Discord channel back/to your ARK servers
-
+- Supports UTF-8. ARK doesn't. If I come up with a good font fix solution for ARK I'll update this post.
 
 ### Instructions for fully working Chat Evolved mod with ChatEvolvedDiscordBot
 ### 1) Install Docker

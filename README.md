@@ -9,7 +9,7 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=1551199162
 ### 1) Install Docker
 (Required enabled Virtualization in your BIOS/UEFI.)
 #### Windows:
-Leave everything default on setup. It may ask to enable Hype-V. Say yes.  
+Leave everything default on setup. It may ask you to enable Hyper-V. Say yes.  
 https://hub.docker.com/editions/community/docker-ce-desktop-windows
 #### Linux:
 Install via your package manager. Ubuntu:
@@ -72,7 +72,7 @@ node ChatEvolvedDiscord.js
 You should now have Chat Evolved mod fully working with cross chat capabalities and also ChatEvolvedDiscordBot to send/receive messages from/to defined Discord channel. 
 ___
 
-##### - Windows notes:
+##### - **Windows notes:**
 To make it easier to launch the bot open Notepad and type:
 ```
 node ChatEvolvedDiscord.js >> ChatEvolvedDiscord-logs.txt 2>> ChatEvolvedDiscord-errors.txt
@@ -86,7 +86,7 @@ shell:startup
 ```
 ___
 
-##### - Linux notes:
+##### - **Linux notes:**
 For distributions with systemd (like Ubuntu) you can create a service file for the bot.  
 First create a script.  
 cd inside ChatEvolvedDiscordBot directory and type:
@@ -101,7 +101,8 @@ Paste:
     path="$HOME/ChatEvolvedDiscordBot"
     /usr/bin/node $path/$file >>$path/${file}-logs.txt 2>>$path/${file}-errors.txt
 ```
-Press: Ctrl + O (Save), Ctrl + X (Close) Type:
+Press: Ctrl + O (Save), Ctrl + X (Close)  
+Type:
 ```
 chmod +x ChatEvolvedDiscord.sh
 ```
@@ -126,7 +127,8 @@ Paste and edit USER and GROUP with your username and also the path to the script
     [Install]
     WantedBy=multi-user.target
 ```
-Press: Ctrl + O (Save), Ctrl + X (Close) Type:
+Press: Ctrl + O (Save), Ctrl + X (Close)  
+Type:
 ```
 sudo systemctl enable ChatEvolvedDiscord.service
 sudo systemctl daemon-reload

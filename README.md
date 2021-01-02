@@ -89,7 +89,7 @@ ___
 ##### - Linux notes:
 For distributions with systemd (like Ubuntu) you can create a service file for the bot.  
 First create a script.  
-Cd inside ChatEvolvedDiscordBot directory and type:
+cd inside ChatEvolvedDiscordBot directory and type:
 ```
 nano ChatEvolvedDiscord.sh
 ```

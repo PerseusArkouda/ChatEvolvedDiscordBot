@@ -116,7 +116,7 @@ Paste and edit USER and GROUP with your username and also the path to the script
     User=GROUP
     Group=GROUP
     ExecStart=/home/USER/ChatEvolvedDiscordBot/ChatEvolvedDiscord.sh
-    ExecStop=/usr/bin/killall -TERM srcds_linux
+    ExecStop=/bin/kill -2 $MAINPID
     [Install]
     WantedBy=multi-user.target
 ```

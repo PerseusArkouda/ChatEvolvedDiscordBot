@@ -47,15 +47,21 @@ ___
 For distributions with systemd (like Ubuntu) you can create a service file for the bot. First create a script. Cd inside ChatEvolvedDiscordBot directory and type:
 > nano ChatEvolvedDiscord.sh
 Paste:
+```
     #!/bin/bash
     file="ChatEvolvedDiscord.js"
     # Change path if different
     path="$HOME/ChatEvolvedDiscordBot"
-    /usr/bin/node $path/$file >>$path/${file}-logs.txt 2>>$path/${file}-errors.txt Press: Ctrl + O (Save), Ctrl + X (Close) Type:
-> chmod +x ChatEvolvedDiscord.sh
+    /usr/bin/node $path/$file >>$path/${file}-logs.txt 2>>$path/${file}-errors.txt
+```
+Press: Ctrl + O (Save), Ctrl + X (Close) Type:
+```
+chmod +x ChatEvolvedDiscord.sh
+```
 Then:
 > nano /lib/systemd/system/ChatEvolvedDiscord.service
 Paste and edit USER and GROUP with your username and also the path to the script:
+```
     [Unit]
     Description=Chat Evolved Discord Bot
     [Service]
@@ -69,7 +75,9 @@ Paste and edit USER and GROUP with your username and also the path to the script
     ExecStart=/home/USER/ChatEvolvedDiscordBot/ChatEvolvedDiscord.sh
     ExecStop=/usr/bin/killall -TERM srcds_linux
     [Install]
-    WantedBy=multi-user.target Press: Ctrl + O (Save), Ctrl + X (Close) Type:
+    WantedBy=multi-user.target
+```
+Press: Ctrl + O (Save), Ctrl + X (Close) Type:
 > sudo systemctl enable ChatEvolvedDiscord.service
     sudo systemctl daemon-reload
     sudo systemctl start ChatEvolvedDiscord.service Verify:

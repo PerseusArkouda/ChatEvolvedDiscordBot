@@ -1,14 +1,18 @@
+// ChatEvolvedDiscordBot - Discord integration for ARK's Chat Evolved mod
+
 //Basic config
-// Required Discord prefix
+// Required Discord Bot prefix
 const prefix = "~";
-// Required Discord Bot token
+// Required Discord Bot Token
 const token = "Your-Discord-Bot-Token-Here";
 // Required Discord Channel ID
 const channelID = "Your-Discord-Channel-ID-Here";
-// Required Webdis HTTP url to retrieve messages
-var getMessageURL = "http://127.0.0.1:7379/LRANGE/YOUR-CLUSTER-HERE/0/1";
-// Required Webdis HTTP url to send messages
-var sendMessageURL = "http://127.0.0.1:7379/LPUSH/YOUR-CLUSTER-HERE/";
+// Required Cluster Name you've set in Chat Evolved mod
+var clusterName = "Your-Cluster-Name-Here";
+// Required Webdis HTTP url to retrieve/send messages. Default: 127.0.0.1 (or localhost)
+var URL = "127.0.0.1";
+// Required Webdis port. Default: 7379
+var port = "7379";
 
 
 // No need to change below
@@ -38,6 +42,9 @@ client.once("ready", () => {
    olderResult = previousResult;
   }
  }), 200);
+
+var getMessageURL = "http://" + URL + ":" + port + "/LRANGE/" + clusterName + "/0/1";
+var sendMessageURL = "http://" + URL + ":" + port + "/LPUSH/" + clusterName + "/";
 
 function lastMessage(getMessageURL, callback) {
   request({

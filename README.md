@@ -74,6 +74,21 @@ git clone https://github.com/PerseusArkouda/ChatEvolvedDiscordBot
 cd ChatEvolvedDiscordBot
 ```
 Open and edit ChatEvolvedDiscord.js, setup the basic config, save and close  
+```
+//Basic config
+// Required Discord Bot prefix - Whatever prefix symbol you want your bot to listen to trigger a command
+const prefix = "~";
+// Required Discord Bot Token - The Token you've got by completing step 7 (keep that secret)
+const token = "Your-Discord-Bot-Token-Here";
+// Required Discord Channel ID - The ID from the Channel the bot will receive/send messages from/to. Right click on Channel and Copy ID
+const channelID = "Your-Discord-Channel-ID-Here";
+// Required Cluster Name you've set in Chat Evolved mod (step 3)
+var clusterName = "Your-Cluster-Name-Here";
+// Required Webdis HTTP url to retrieve/send messages. Default: 127.0.0.1 (or localhost)
+var URL = "127.0.0.1";
+// Required Webdis port. Default: 7379
+var port = "7379";
+```
 Type in terminal/cmd:
 ```
 node ChatEvolvedDiscord.js

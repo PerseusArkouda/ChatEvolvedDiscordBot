@@ -29,6 +29,8 @@ client.once("ready", () => {
  var result;
  var previousResult;
  var olderResult;
+ var getMessageURL = "http://" + URL + ":" + port + "/LRANGE/" + clusterName + "/0/1";
+ var sendMessageURL = "http://" + URL + ":" + port + "/LPUSH/" + clusterName + "/";
  setInterval(() => lastMessage(getMessageURL, function(body) {
   Object.keys(body).forEach(e => result=`${body[e]}`);
   result = result.replace(/,<.*/, "");
@@ -42,9 +44,6 @@ client.once("ready", () => {
    olderResult = previousResult;
   }
  }), 200);
-
-var getMessageURL = "http://" + URL + ":" + port + "/LRANGE/" + clusterName + "/0/1";
-var sendMessageURL = "http://" + URL + ":" + port + "/LPUSH/" + clusterName + "/";
 
 function lastMessage(getMessageURL, callback) {
   request({

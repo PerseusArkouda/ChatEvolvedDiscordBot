@@ -3,7 +3,7 @@ Discord integration for ARK's Chat Evolved mod
 https://steamcommunity.com/sharedfiles/filedetails/?id=1551199162
 
 - It will send/receive messages to/from specified Discord channel back/to your ARK servers
-- Supports UTF-8. ARK doesn't. If I come up with a good font fix solution for ARK I'll update this post.
+- Supports UTF-8. ARK doesn't. If I come up with a good font fix solution for ARK I'll update this post
 
 ### Instructions for fully working Chat Evolved mod with ChatEvolvedDiscordBot
 ### 1) Install Docker
@@ -45,14 +45,17 @@ Result should be:
 {"GET":"world"}
 ```
 ### 3) Install Chat Evolved mod
+Subscribe: steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id=1551199162  
+Install the mod both to your client and server and activate the mod  
+  
 From the game press enter to open chat and type:
 ```
 /settings
 ```
-There you can set your cluster name (servers will use that to talk to each other), server name and for Backend edit the default ip with: 127.0.0.1:7379 (or whatever else it is in your 
-case).  
-Press all Set buttons and check if you have a working cross chat.  
-You should be able to communicate with the configured servers in your cluster now.
+There you can set your cluster name server name (servers will use that to talk to each other) and for Backend edit the default ip with: 127.0.0.1:7379 (or whatever else it is in your 
+case)  
+Press all Set buttons and check if you have a working cross chat  
+You should be able to communicate with the configured servers in your cluster now
 ### 4) Install Git
 https://github.com/git-guides/install-git
 ### 5) Install nodejs
@@ -70,12 +73,12 @@ Type in terminal/cmd:
 git clone https://github.com/PerseusArkouda/ChatEvolvedDiscordBot
 cd ChatEvolvedDiscordBot
 ```
-Open and edit ChatEvolvedDiscord.js, setup the basic config, save and close.  
+Open and edit ChatEvolvedDiscord.js, setup the basic config, save and close  
 Type in terminal/cmd:
 ```
 node ChatEvolvedDiscord.js
 ```
-You should now have Chat Evolved mod fully working with cross chat capabalities and also ChatEvolvedDiscordBot to send/receive messages from/to defined Discord channel. 
+You should now have Chat Evolved mod fully working with cross chat capabalities and also ChatEvolvedDiscordBot to send/receive messages from/to defined Discord channel 
 ___
 
 ##### - **Windows notes:**
@@ -84,8 +87,8 @@ To make it easier to launch the bot open Notepad and type:
 node ChatEvolvedDiscord.js >> ChatEvolvedDiscord-logs.txt 2>> ChatEvolvedDiscord-errors.txt
 ```
 Save as ChatEvolvedDiscordBot.bat  
-Now the bot can run just with double click and also will output to ChatEvolvedDiscord-logs.txt and the errors to ChatEvolvedDiscord-errors.txt.  
-Also you can drop it to your startup items to start automatically with Windows.  
+Now the bot can run just with double click and also will output to ChatEvolvedDiscord-logs.txt and the errors to ChatEvolvedDiscord-errors.txt  
+Also you can drop it to your startup items to start automatically with Windows  
 To do that press Windows key + R (Run) and type:
 ```
 shell:startup
@@ -93,8 +96,8 @@ shell:startup
 ___
 
 ##### - **Linux notes:**
-For distributions with systemd (like Ubuntu) you can create a service file for the bot.  
-First create a script.  
+For distributions with systemd (like Ubuntu) you can create a service file for the bot  
+First create a script  
 cd inside ChatEvolvedDiscordBot directory and type:
 ```
 nano ChatEvolvedDiscord.sh

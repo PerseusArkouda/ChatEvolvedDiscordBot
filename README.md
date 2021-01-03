@@ -52,7 +52,7 @@ From the game press enter to open chat and type:
 ```
 /settings
 ```
-There you can set your cluster name server name (servers will use that to talk to each other) and for Backend edit the default ip with: 127.0.0.1:7379 (or whatever else it is in your 
+There you can set your cluster name (servers will use that to talk to each other), your current server's name and for Backend edit the default ip with: 127.0.0.1:7379 (or whatever else it is in your 
 case)  
 Press all Set buttons and check if you have a working cross chat  
 You should be able to communicate with the configured servers in your cluster now

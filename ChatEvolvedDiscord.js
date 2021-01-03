@@ -19,7 +19,10 @@ var port = "7379";
 // Required discord.js npm module
 const Discord = require("discord.js");
 // Required HTTP request npm module
-var request = require('request');
+var request = require("request");
+
+var getMessageURL = "http://" + URL + ":" + port + "/LRANGE/" + clusterName + "/0/1";
+var sendMessageURL = "http://" + URL + ":" + port + "/LPUSH/" + clusterName + "/";
 
 const client = new Discord.Client();
 
@@ -29,8 +32,6 @@ client.once("ready", () => {
  var result;
  var previousResult;
  var olderResult;
- var getMessageURL = "http://" + URL + ":" + port + "/LRANGE/" + clusterName + "/0/1";
- var sendMessageURL = "http://" + URL + ":" + port + "/LPUSH/" + clusterName + "/";
  setInterval(() => lastMessage(getMessageURL, function(body) {
   Object.keys(body).forEach(e => result=`${body[e]}`);
   result = result.replace(/,<.*/, "");

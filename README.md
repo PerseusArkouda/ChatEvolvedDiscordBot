@@ -15,6 +15,12 @@ https://hub.docker.com/editions/community/docker-ce-desktop-windows
 Install via your package manager. Ubuntu:
 ```
 sudo apt install docker
+sudo systemctl enable docker
+sudo systemctl start docker
+```
+Verify:
+```
+sudo systemctl status docker
 ```
 ### 2) Install Redis and Webdis for Docker
 In terminal or cmd (Windows) type: 

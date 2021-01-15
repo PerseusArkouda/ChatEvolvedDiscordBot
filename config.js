@@ -72,7 +72,7 @@ config.switches.rconTribeLog = true;
 // --> If you don't use all the examples, remove them or they'll break the bot. Ofcourse, you can add more if you want.
 config.rconTribes = [
     {
-        tribename: "my-tribe,
+        tribename: "my-tribe",
         tribeRconIP: "127.0.0.1",
         tribeRconPort: 32330,
         tribeID: "my-tribe-id",

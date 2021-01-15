@@ -57,17 +57,17 @@ config.rcon.rconServers = [
     }
 ];
 // Enable/disable get the game log from RCON. Optional. Depends on: RCON password, RCON servers.
-config.switches.rconGameLog = true;
+config.switches.rconGameLog = false;
 // Enable/disable Discord topic change with current online players. Optional. Depends on: RCON password, RCON servers.
-config.switches.rconTopicChange = true;
+config.switches.rconTopicChange = false;
 // Enable/disable player join/left messages to be sent to Discord channel. Optional. Depends on: RCON password, RCON servers, RCON game log.
-config.switches.rconPlayerNotifications = true;
+config.switches.rconPlayerNotifications = false;
 // Enable/disable Admin command log to be sent to a Discord channel. Optional. Depends on: RCON password, RCON servers, RCON game log.
-config.switches.rconAdminCmdLog = true;
+config.switches.rconAdminCmdLog = false;
 // Set Discord channel ID for Admin log to be sent. Optional. Depends on: RCON password, RCON servers, RCON game log, Admin command log.
 config.rconAdminCmdChannelID = "my-admin-cmd-log-channel-id";
 // Enable/disable Discord tribe log feed. Optional. Depends on: RCON password, RCON servers, RCON game log.
-config.switches.rconTribeLog = true;
+config.switches.rconTribeLog = false;
 // Setup the tribe(s) you want to get tribe log from. Optional. Depends on: RCON password, RCON servers, RCON game log, RCON tribe log.
 // --> If you don't use all the examples, remove them or they'll break the bot. Ofcourse, you can add more if you want.
 config.rconTribes = [

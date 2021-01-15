@@ -2,8 +2,13 @@
 Discord integration for ARK's Chat Evolved mod  
 https://steamcommunity.com/sharedfiles/filedetails/?id=1551199162
 
-- It will send/receive messages to/from specified Discord channel back/to your ARK servers
+## Features
+- It will send/receive messages to/from specified Discord channel back/to your ARK servers 
 - Supports UTF-8. ARK doesn't. Global font fix guide: https://steamcommunity.com/sharedfiles/filedetails/?id=732646921
+- It can send tribe log to Discord in specified tribe channels
+- It can set channel's topic with online players of your cluster
+- It can show player notifications (join/left)
+- It can log Admin commands and send in specified channel
 
 ### Instructions for fully working Chat Evolved mod with ChatEvolvedDiscordBot
 ### 1) Install Docker
@@ -63,7 +68,7 @@ https://nodejs.org/en/download/
 ### 6) Install required npm modules
 Type in terminal/cmd:
 ```
-npm install discord.js request
+npm install discord.js axios source-rcon-client
 ```
 ### 7) Create a Discord Bot
 https://discordpy.readthedocs.io/en/latest/discord.html
@@ -73,21 +78,20 @@ Type in terminal/cmd:
 git clone https://github.com/PerseusArkouda/ChatEvolvedDiscordBot
 cd ChatEvolvedDiscordBot
 ```
-Open and edit ChatEvolvedDiscord.js, setup the basic config, save and close  
+Open and edit config.js, setup at least the basic config, save and close  
 ```
-//Basic config
-// Required Discord Bot prefix - Whatever prefix symbol you want your bot to listen to trigger a command
-const prefix = "~";
-// Required Discord Bot Token - The Token you've got by completing step 7 (keep that secret)
-const token = "Your-Discord-Bot-Token-Here";
-// Required Discord Channel ID - The ID from the Channel the bot will receive/send messages from/to. Right click on Channel and Copy ID
-const channelID = "Your-Discord-Channel-ID-Here";
-// Required Cluster Name you've set in Chat Evolved mod (step 3)
-var clusterName = "Your-Cluster-Name-Here";
-// Required Webdis HTTP url to retrieve/send messages. Default: 127.0.0.1 (or localhost)
-var URL = "127.0.0.1";
-// Required Webdis port. Default: 7379
-var port = "7379";
+// The name of your Ark servers cluster. Required.
+config.clusterName = "my-cluster"
+// The Discord bot token. Required.
+config.token = "my-bot-token";
+// Set the prefix to trigger the bot commands
+config.prefix = "~";
+// The Discord channel ID in which the bot will use to send/receive chat messages. Required.
+config.channelID = "my-channel-id"; //official
+// The Webdis URL. It should be good as is. Required.
+config.webdis.url = "http://127.0.0.1";
+// The Webdis port. It should be good as is. Required.
+config.webdis.port = "7379";
 ```
 Type in terminal/cmd:
 ```
@@ -99,7 +103,7 @@ ___
 ##### - **Windows notes:**
 To make it easier to launch the bot open Notepad and type:
 ```
-node ChatEvolvedDiscord.js >> ChatEvolvedDiscord-logs.txt 2>> ChatEvolvedDiscord-errors.txt
+node ChatEvolvedDiscord.js > ChatEvolvedDiscord-logs.txt 2> ChatEvolvedDiscord-errors.txt
 ```
 Save as ChatEvolvedDiscordBot.bat  
 Now the bot can run just with double click and also will output to ChatEvolvedDiscord-logs.txt and the errors to ChatEvolvedDiscord-errors.txt  
@@ -123,7 +127,7 @@ Paste:
     file="ChatEvolvedDiscord.js"
     # Change path if different
     path="$HOME/ChatEvolvedDiscordBot"
-    /usr/bin/node $path/$file >>$path/${file}-logs.txt 2>>$path/${file}-errors.txt
+    /usr/bin/node $path/$file >$path/${file}-logs.txt 2>$path/${file}-errors.txt
 ```
 Press: Ctrl + O (Save), Ctrl + X (Close)  
 Type:
@@ -147,7 +151,7 @@ Paste and edit User, Group and ExecStart path with your username:
     User=USER
     Group=USER
     ExecStart=/home/USER/ChatEvolvedDiscordBot/ChatEvolvedDiscord.sh
-    ExecStop=/bin/kill -2 $MAINPID
+    WorkingDirectory=/home/USER/ChatEvolvedDiscordBot
     [Install]
     WantedBy=multi-user.target
 ```

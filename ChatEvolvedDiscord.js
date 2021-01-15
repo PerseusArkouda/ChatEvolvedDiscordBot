@@ -1,109 +1,335 @@
-// ChatEvolvedDiscordBot - Discord integration for ARK's Chat Evolved mod
-
-//Basic config
-// Required Discord Bot prefix
-const prefix = "~";
-// Required Discord Bot Token
-const token = "Your-Discord-Bot-Token-Here";
-// Required Discord Channel ID
-const channelID = "Your-Discord-Channel-ID-Here";
-// Required Cluster Name you've set in Chat Evolved mod
-var clusterName = "Your-Cluster-Name-Here";
-// Required Webdis HTTP url to retrieve/send messages. Default: 127.0.0.1 (or localhost)
-var URL = "127.0.0.1";
-// Required Webdis port. Default: 7379
-var port = "7379";
-
-
-// No need to change below
-// Required discord.js npm module
 const Discord = require("discord.js");
-// Required HTTP request npm module
-var request = require("request");
+const axios = require("axios");
+const Rcon = require("source-rcon-client").default;
+const config = require("./config");
 
-var getMessageURL = "http://" + URL + ":" + port + "/LRANGE/" + clusterName + "/0/1";
-var sendMessageURL = "http://" + URL + ":" + port + "/LPUSH/" + clusterName + "/";
+const clusterName = config.clusterName;
+const token = config.token;
+const prefix = config.prefix;
+const channelID = config.channelID;
+const webdisURL = config.webdis.url;
+const webdisPort = config.webdis.port;
+const showLog = config.switches.showLog;
+const ignoreBots = config.switches.ignoreBots;
+const setBotActivity = config.switches.setBotActivity;
+const botActivityMessage = config.botActivityMessage;
+const rconPassword = config.rcon.password;
+const rconServers = config.rcon.rconServers;
+const rconGameLog = config.switches.rconGameLog;
+const rconTopicChange = config.switches.rconTopicChange;
+const rconPlayerNotifications = config.switches.rconPlayerNotifications;
+const rconAdminCmdLog = config.switches.rconAdminCmdLog;
+const rconAdminCmdChannelID = config.rconAdminCmdChannelID;
+const rconTribeLog = config.switches.rconTribeLog;
+const rconTribes = config.rconTribes;
 
 const client = new Discord.Client();
 
+var gameLogID;
+var antiSpamTotalPlayers;
+var antiSpamChatMessage;
+
 client.once("ready", () => {
- client.user.setActivity("ChatEvolvedDiscord", {type: "Type"});
- // Read messages from Webdis every 0.2s and post to Discord if any new comes up
- var result;
- var previousResult;
- var olderResult;
- setInterval(() => lastMessage(getMessageURL, function(body) {
-  Object.keys(body).forEach(e => result=`${body[e]}`);
-  result = result.replace(/,<.*/, "");
-  result = result.replace(/<.*\">/, "");
-  result = result.replace(/<\/>/, "");
-  if (result !== previousResult && result !== olderResult) {
-   if (result.indexOf("[Discord]") >= 0) return;
-   client.channels.cache.get(channelID).send(result);
-   //console.log(result);
-   previousResult = result;
-   olderResult = previousResult;
+
+  if (setBotActivity) {
+    client.user.setActivity(botActivityMessage, {
+       type: "Type"
+    });
   }
- }), 200);
 
-function lastMessage(getMessageURL, callback) {
-  request({
-   url: getMessageURL,
-   json: true
-  }, function (error, response, body) {
-   if (!error && response.statusCode === 200) {
-    callback(body);
-   }
-  });
- }
+  setInterval(getChat, 300);
 
- console.log("Ready!");
+  if (rconGameLog) {
+    setInterval(getGameLog, 10000);
+  }
+
+  if (rconTribeLog) {
+    setInterval(getTribeLog, 25000);
+  }
+
+  if (rconTopicChange) {
+    setInterval(getPlayers, 75000);
+  }
+
+  if (rconPlayerNotifications) {
+    setInterval(getPlayerNotifications, 5000);
+  }
+
+  if (rconAdminCmdLog) {
+    setInterval(getAdminCmd, 7000);
+  }
+
+ console.log("ChatEvolvedDiscord Ready!");
 });
 
 client.once("reconnecting", () => {
-  console.log("Reconnecting!");
+        console.log("ChatEvolvedDiscord Reconnecting!");
 });
 
 client.once("disconnect", () => {
-  console.log("Disconnect!");
+        console.log("ChatEvolvedDiscord Disconnected!");
 });
 
 client.on("message", async message => {
- // Ignores other bot messages
- if (message.author.bot) return;
- // Ignores other channel messages than the one specified here
- if (message.channel.id !== channelID) return;
- // ~test in specified channel will return "Testing Ok" from the bot to verify it's running
- if (message.content.startsWith(`${prefix}test`)) {
-  test(message);
- }
- // Start executing commands
- execute(message, getMessageURL);
+  if (ignoreBots && message.author.bot) return;
+  // Ignores messages starting with [. Useful if ignoreBots is disabled.
+  if (message.content.startsWith("[")) return;
+  // Ignores other channels' messages than the one specified
+  if (message.channel.id !== channelID) return;
+  // ~test in specified channel will return "Testing Ok" from the bot to verify it's running
+  if (message.content.startsWith(`${prefix}test`)) {
+    client.channels.cache.get(channelID).send("Testing ok!");
+  }
+  var user = message.author.username;
+  var encodedUser = encodeURIComponent(message.author.username);
+  var content = message.content;
+  var encodedContent = encodeURIComponent(message.content);
+  try {
+    const sendChatMessage = await axios.get(`${webdisURL}:${webdisPort}/LPUSH/${clusterName}/\<RichColor%20Color=\"0.5,%200.5,%200.5,%201\"\>[Discord]%20\(${encodedUser}\):\<%2F\>%20${encodedContent}`);
+    if (showLog) console.log(`Message from Discord to Ark: ${user}: ${content}`);
+  } catch (err) {
+    console.error(`Error (14). Axios failed to send chat message in message()! \n${err}`);
+  };
 });
 
-function execute(message, getMessageURL) {
-// Send messages from Discord to Webdis
- try {
-  var user = encodeURIComponent(message.author.username);
-  var content = encodeURIComponent(message.content);
-  var sendMessageWebdis = sendMessageURL + "\<RichColor%20Color=\"0.5,%200.5,%200.5,%201\"\>[Discord]%20\(" + user + "\):\<%2F\>%20" + content;
-  sendMessage(message, sendMessageWebdis);
- } catch (err) {
-  console.log(err);
- }
-}
-
-function test(message) {
- client.channels.cache.get(channelID).send("Testing ok!");
-}
-
-
-function sendMessage(message, sendMessageWebdis) {
- request(sendMessageWebdis, function (error, response, body) {
-  if (!error && response.statusCode == 200) {
-    console.log(body)
+function getGameLogID(val) {
+  for (let i = 0, l = rconServers.length; i < l; i++) {
+    gameLogID = rconServers[i].port.toString().match(val);
+    if (gameLogID) {
+      gameLogID = `${i}${gameLogID}`;
+      return gameLogID;
+    }
   }
- });
 }
+
+const getChat = async () => {
+  try {
+    var chatMessage = await axios.get(`${webdisURL}:${webdisPort}/LRANGE/${clusterName}/0/1`);
+    chatMessage = chatMessage.data.LRANGE[0].replace(/,<.*/, "").replace(/<.*\">/, "").replace(/<\/>/, "");
+    var previousChatMessage = await axios.get(`${webdisURL}:${webdisPort}/GET/${clusterName}-lastMessage`);
+    previousChatMessage = previousChatMessage.data.GET;
+    if (chatMessage !== previousChatMessage && chatMessage !== antiSpamChatMessage) {
+      antiSpamChatMessage = chatMessage;
+      //console.log(`DEBUG: chatMessage: ${chatMessage}`);
+      //console.log(`DEBUG: previousChatMessage: ${previousChatMessage}`);
+      var encodedChatMessage = encodeURIComponent(chatMessage);
+      try {
+        const setPreviousChatMessage = await axios.get(`${webdisURL}:${webdisPort}/SET/${clusterName}-lastMessage/${encodedChatMessage}`);
+      } catch (err) {
+        console.error(`Error (12). Axios failed to set previous chat message in getChat()! \n${err}`);
+      };
+      if (chatMessage.indexOf("[Discord]") >= 0) return;
+      if (showLog) console.log(`Message from Ark: ${chatMessage}`);
+      client.channels.cache.get(channelID).send(chatMessage);
+    }
+  } catch (err) {
+    console.error(`Error (13). Failed to get chat messages in getChat()! \n${err}`);
+  };
+};
+
+const getGameLog = async () => {
+    for (let i = 0, l = rconServers.length; i < l; i++) {
+      var rconServer = rconServers[i].IP;
+      var rconPort = rconServers[i].port;
+      gameLogID = getGameLogID(rconPort);
+      const delGameLog = async () => {
+        try {
+          //tmp
+	  const delOldTable = await axios.get(`${webdisURL}:${webdisPort}/DEL/gameLog-${rconPort}`);
+          const delTable = await axios.get(`${webdisURL}:${webdisPort}/DEL/gameLog-${gameLogID}`);
+        } catch (err) {
+          console.error(`Error (6). Axios failed to delete gameLog table in getTribeLog()! \n${err}`);
+        };
+      };
+      setInterval(delGameLog, 86400000);
+      var rcon = new Rcon(rconServer, rconPort, rconPassword);
+      try {
+        const rconConnect = await rcon.connect();
+        const rconReply = await rcon.send("getgamelog");
+        const gameLog = rconReply.split(/\n/g);
+        if (gameLog) {
+          for (let j = 0, m = gameLog.length; j < m; j++) {
+            if (gameLog[j].match(/[a-z]/)) {
+               var filteredGameLog = gameLog[j].match(/Server received, But no response!!/);
+               if (!filteredGameLog) {
+                 //console.log(`DEBUG: gameLog for ${rconServer}:${rconPort}: ${gameLog[j]}`);
+                 var encodedGameLog = encodeURIComponent(gameLog[j]);
+                 try {
+                   const sendGameLog = await axios.get(`${webdisURL}:${webdisPort}/LPUSH/gameLog-${gameLogID}/${gameLog[j]}`);
+                 } catch (err) {
+                   console.error(`Error (7). Axios failed to send gameLog in getGameLog()! \n${err}`);
+                 };
+               }
+            }
+          }
+        }
+        const rconDisconnect = await rcon.disconnect();
+      } catch (err) {
+        // Commented out the actual error output to avoid spam from offline servers.
+        //console.error(`Error (8). ${rconServer}:${rconPort} is unreachable in getGameLog()! \n${err}`);
+      };
+    }
+  };
+
+const getTribeLog = async () => {
+    for (let i = 0, l = rconTribes.length; i < l; i++) {
+      var tribeName = rconTribes[i].tribeName;
+      var tribeRconServer = rconTribes[i].tribeRconIP;
+      var tribeRconPort = rconTribes[i].tribeRconPort;
+      var tribeID = rconTribes[i].tribeID;
+      var tribeChannelID = rconTribes[i].tribeChannelID;
+      gameLogID = getGameLogID(tribeRconPort);
+      try {
+        const getTribeLog = await axios.get(`${webdisURL}:${webdisPort}/LRANGE/gameLog-${gameLogID}/0/100`);
+        var tribeLog = getTribeLog.data.LRANGE.sort().filter(item => item.indexOf(tribeID) !== -1).slice(-1)[0];
+        if (tribeLog) {
+          tribeLog = tribeLog.replace(/,<.*/, "").replace(/<.*\">/, "").replace(/<\/>/, "").replace(/<$/, "");
+          try {
+            var previousTribeLog = await axios.get(`${webdisURL}:${webdisPort}/GET/tribeLog-${tribeID}-${tribeRconPort}`);
+            previousTribeLog = previousTribeLog.data.GET;
+            if (tribeLog !== previousTribeLog) {
+              //console.log(`DEBUG: tribeLog for ${tribeRconServer}:${tribeRconPort}: ${tribeLog}`);
+              var encodedTribeLog = encodeURIComponent(tribeLog);
+              try {
+                const sendTribeLog = await axios.get(`${webdisURL}:${webdisPort}/SET/tribeLog-${tribeID}-${tribeRconPort}/${encodedTribeLog}`);
+                client.channels.cache.get(tribeChannelID).send(tribeLog);
+                if (showLog) console.log(`Tribe log: ${tribeLog}`);
+              } catch (err) {
+                console.error(`Error (10). Failed to send tribeLog in getTribeLog()! \n${err}`);
+              };
+            }
+          } catch (err) {
+            console.error(`Error (11). Failed to get tribeLog in getTribeLog()! \n${err}`);
+          };
+        }
+      } catch (err) {
+        // Commented out the actual error output to avoid spam when there are no tribe logs.
+        //console.error(`Error (1). ${tribeRconServer}:${tribeRconPort} is unreachable in getTribeLog()! \n${err}`);
+      };
+    }
+  };
+
+const getAdminCmd = async () => {
+  for (let i = 0, l = rconServers.length; i < l; i++) {
+    var rconServer = rconServers[i].IP;
+    var rconPort = rconServers[i].port;
+    var rconServerName = rconServers[i].name;
+    gameLogID = getGameLogID(rconPort);
+    try {
+      const getAdminCmdLog = await axios.get(`${webdisURL}:${webdisPort}/LRANGE/gameLog-${gameLogID}/0/100`);
+      var adminCmdLog = getAdminCmdLog.data.LRANGE.sort().filter(item => item.indexOf("AdminCmd") !== -1).slice(-1)[0];
+      if (adminCmdLog) {
+        try {
+          var previousAdminCmdLog = await axios.get(`${webdisURL}:${webdisPort}/GET/lastAdminCmdLog-${rconPort}`);
+          previousAdminCmdLog = previousAdminCmdLog.data.GET;
+          if (adminCmdLog !== previousAdminCmdLog) {
+            //console.log(`DEBUG: [${rconServerName}]: AdminCmd log: ${adminCmdLog}`);
+            var encodedAdminCmdLog = encodeURIComponent(adminCmdLog);
+            try {
+              const sendAdminCmdLog = await axios.get(`${webdisURL}:${webdisPort}/SET/lastAdminCmdLog-${rconPort}/${encodedAdminCmdLog}`);
+              client.channels.cache.get(rconAdminCmdChannelID).send(`[${rconServerName}]: ${adminCmdLog}`);
+              if (showLog) console.log(`[${rconServerName}]: AdminCmd log: ${adminCmdLog}`);
+            } catch (err) {
+              console.error(`Error (15). Failed to send adminCmdLog in getAdminCmd()! \n${err}`);
+            };
+          }
+        } catch (err) {
+          console.error(`Error (16). Failed to get adminCmdLog in getAdminCmd()! \n${err}`);
+        };
+      }
+    } catch (err) {
+     // Commented out the actual error output to avoid spam from offline servers.
+     // console.error(`Error (17). ${rconServerName} is unreachable in getAdminCmd()! \n${err}`);
+    };
+  }
+};
+
+const getPlayerNotifications = async () => {
+  for (let i = 0, l = rconServers.length; i < l; i++) {
+    var rconServer = rconServers[i].IP;
+    var rconPort = rconServers[i].port;
+    var rconServerName = rconServers[i].name;
+    gameLogID = getGameLogID(rconPort);
+    try {
+      const getPlayerNotificationsLog = await axios.get(`${webdisURL}:${webdisPort}/LRANGE/gameLog-${gameLogID}/0/100`);
+      var playerNotificationsLog = getPlayerNotificationsLog.data.LRANGE.sort().filter(item => item.indexOf("this ARK!") !== -1).slice(-1)[0].replace(/^.*: /, "");
+      if (playerNotificationsLog) {
+        try {
+          var previousPlayerNotificationsLog = await axios.get(`${webdisURL}:${webdisPort}/GET/lastPlayerNotificationsLog-${rconPort}`);
+          previousPlayerNotificationsLog = previousPlayerNotificationsLog.data.GET;
+          if (playerNotificationsLog !== previousPlayerNotificationsLog) {
+            //console.log(`DEBUG: [${rconServerName}]: playerNotifications log: ${playerNotificationsLog}`);
+            var encodedPlayerNotificationsLog = encodeURIComponent(playerNotificationsLog);
+            try {
+              const sendPlayerNotificationsLog = await axios.get(`${webdisURL}:${webdisPort}/SET/lastPlayerNotificationsLog-${rconPort}/${encodedPlayerNotificationsLog}`);
+              client.channels.cache.get(channelID).send(`[${rconServerName}]: ${playerNotificationsLog}`);
+              if (showLog) console.log(`[${rconServerName}]: Player Notifications log: ${playerNotificationsLog}`);
+            } catch (err) {
+              console.error(`Error (18). Failed to send playerNotificationsLog in getPlayerNotifications()! \n${err}`);
+            };
+          }
+        } catch (err) {
+          console.error(`Error (19). Failed to get playerNotificationsLog in getPlayerNotifications()! \n${err}`);
+        };
+      }
+    } catch (err) {
+      // Commented out the actual error output to avoid spam from offline servers.
+      //console.error(`Error (20). ${rconServerName} is unreachable in getPlayerNotifications()! \n${err}`);
+    };
+  }
+};
+
+function getPlayers() {
+        const delRconTable = async () => {
+            try {
+                const delTable = await axios.get(`${webdisURL}:${webdisPort}/DEL/listplayers`);
+            } catch (err) {
+                console.error(`Error (2). Axios failed to delete rcon table in delRconPlayers()! \n${err}`);
+            };
+        };
+        delRconTable();
+
+        const addRconPlayers = async () => {
+            for (let i = 0, l = rconServers.length; i < l; i++) {
+                var rconServer = rconServers[i].IP;
+                var rconPort = rconServers[i].port;
+                var rcon = new Rcon(rconServer, rconPort, rconPassword);
+                try {
+                    const rconConnect = await rcon.connect();
+                    const rconReply = await rcon.send("listplayers");
+                    const players = rconReply.match(/\n/g).length - 1;
+                    //console.log(`DEBUG: Checking ${rconServer}:${rconPort}: ${players} players found.`);
+                    try {
+                        const addRconPlayers = await axios.get(`${webdisURL}:${webdisPort}/LPUSH/listplayers/${players}`);
+                    } catch (err) {
+                        console.error(`Error (3). Axios failed to add players in addRconPlayers()! \n${err}`);
+                    };
+                    const rconDisconnect = await rcon.disconnect();
+                } catch (err) {
+                    // Commented out the actual error output to avoid spam from offline servers.
+                    //console.error(`Error (4). ${rconServer}:${rconPort} is unreachable in addRconPlayers()! \n${err}`);
+                };
+            }
+            try {
+                const gettingPlayers = await axios.get(`${webdisURL}:${webdisPort}/LRANGE/listplayers/0/30`);
+                const totalPlayers = gettingPlayers.data.LRANGE.map(function (x) {
+                    return parseInt(x, 10);
+                }).reduce(function (a, b) {
+                    return a + b;
+                }, 0);
+                if (totalPlayers !== antiSpamTotalPlayers) {
+                    if (showLog) console.log(`Total players in ${clusterName}: ${totalPlayers}`);
+                    antiSpamTotalPlayers = totalPlayers;
+                    client.channels.cache.get(channelID).setTopic(`Current online players in ${clusterName}: ${totalPlayers}`);
+                } else {
+                    if (showLog) console.log(`Total players in ${clusterName}: ${totalPlayers}. Same value with previous check. Skipping update.`);
+                    return;
+                }
+            } catch (err) {
+                console.error(`Error (5). Axios failed to set totalPlayers in addRconPlayers()! \n${err}`);
+            };
+        };
+        addRconPlayers();
+    }
 
 client.login(token);

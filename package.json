@@ -1,0 +1,32 @@
+{
+  "name": "chatevolveddiscordbot",
+  "version": "1.0.0",
+  "description": "Discord bot chat integration for Ark mod: Chat Evolved",
+  "main": "ChatEvolvedDiscord.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PerseusArkouda/ChatEvolvedDiscordBot.git"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "chat",
+    "chat",
+    "evolved",
+    "ark",
+    "survival",
+    "evolved",
+    "node",
+    "nodejs",
+    "javascript"
+  ],
+  "author": "Perseus",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/PerseusArkouda/ChatEvolvedDiscordBot/issues"
+  },
+  "homepage": "https://github.com/PerseusArkouda/ChatEvolvedDiscordBot#readme"
+}

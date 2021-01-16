@@ -9,6 +9,10 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=1551199162
 - It can set channel's topic with online players of your cluster
 - It can show player notifications (join/left)
 - It can log Admin commands and send in specified channel
+- Supported commands:  
+~del <messages number> - Deletes specified number of messages in current Discord channel  
+~discord - Returns your most popular Discord invite (works also from the game chat)  
+(more to come...)
 
 ### Instructions for fully working Chat Evolved mod with ChatEvolvedDiscordBot
 ### 1) Install Docker
@@ -65,9 +69,9 @@ You should be able to communicate with the configured servers in your cluster no
 https://github.com/git-guides/install-git
 ### 5) Install nodejs
 https://nodejs.org/en/download/
-### 7) Create a Discord Bot
+### 6) Create a Discord Bot
 https://discordpy.readthedocs.io/en/latest/discord.html
-### 8) Install and run ChatEvolvedDiscordBot
+### 7) Install and run ChatEvolvedDiscordBot
 Type in terminal/cmd:
 ```
 git clone https://github.com/PerseusArkouda/ChatEvolvedDiscordBot

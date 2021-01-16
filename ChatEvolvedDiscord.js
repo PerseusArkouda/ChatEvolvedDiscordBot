@@ -73,14 +73,62 @@ client.once("disconnect", () => {
 
 client.on("message", async message => {
   if (ignoreBots && message.author.bot) return;
+  // ~test in any channel will return "Testing Ok" from the bot to verify it's running
+  if (message.content.startsWith(`${prefix}test`)) {
+    await message.channel.send("Testing ok!");
+    return;
+    //client.channels.cache.get(channelID).send("Testing ok!");
+  }
+  // ~help on any channel will display the available bot commands
+  if (message.content.startsWith(`${prefix}help`)) {
+    await message.channel.send(`\`\`\`Supported commands: \n${prefix}del <message number> - Deletes the specified amount of messages\`\`\``);
+    return;
+  }
+  // Returns your most popular Discord invite
+  if (message.content.startsWith(`${prefix}discord`)) {
+    sendDiscordInvite(message);
+    return
+  }
+  // ~del <number of messages> on channel will delete the specified amount of messages
+  var args;
+  var ownMsg;
+  if (message.content.startsWith(`${prefix}del`)) {
+    args = message.content.split(' ').splice(1)[0];
+    if (message.member.hasPermission("MANAGE_MESSAGES")) {
+      if (!args || !args === parseInt(args, 10) || args >= 100) {
+        ownMsg = await message.channel.send("Define how many messages you want to delete (max 100 and newer than 14days)...");
+        await ownMsg.delete({ timeout: 5000 });
+      } else {
+        var msgNum = args;
+        msgNum++;
+        try {
+          const msgList = await message.channel.messages.fetch({ limit: msgNum });
+          if (msgList) {
+            await message.channel.bulkDelete(msgList);
+            ownMsg = await message.channel.send(`Deleted ${args} messages.`);
+            await ownMsg.delete({ timeout: 1000 });
+          }
+        } catch (err) {
+          ownMsg = await message.channel.send("Couldn't delete the messages.");
+          await ownMsg.delete({ timeout: 3000 });
+        };
+      }
+    } else {
+      ownMsg = await message.channel.send("You don't have the permissions required for that action!");
+      await ownMsg.delete({ timeout: 3000 });
+    }
+  return;
+  }
+  // If IgnoreBots is disabled, messages starting with ~ from game chat will trigger the specified bot commands.
+  // Returns your most popular Discord invite from the game chat
+  if (message.content.indexOf(`]: ${prefix}discord`) >= 0) {
+    sendDiscordInvite(message);
+    return;
+  }
+  // Ignores other channels' messages than the one specified to send to Ark servers
+  if (message.channel.id !== channelID) return;
   // Ignores messages starting with [. Useful if ignoreBots is disabled.
   if (message.content.startsWith("[")) return;
-  // Ignores other channels' messages than the one specified
-  if (message.channel.id !== channelID) return;
-  // ~test in specified channel will return "Testing Ok" from the bot to verify it's running
-  if (message.content.startsWith(`${prefix}test`)) {
-    client.channels.cache.get(channelID).send("Testing ok!");
-  }
   var user = message.author.username;
   var encodedUser = encodeURIComponent(message.author.username);
   var content = message.content;
@@ -92,6 +140,15 @@ client.on("message", async message => {
     console.error(`Error (14). Axios failed to send chat message in message()! \n${err}`);
   };
 });
+
+const sendDiscordInvite = async (message) => {
+  var invites = await message.guild.fetchInvites();
+  let invitesArray = [];
+  invites.forEach(invite => invitesArray.push({ code: invite.code, uses: invite.uses }));
+  invitesArray.sort((a, b) => { return a.uses - b.uses; });
+  var discordInvite = invitesArray.slice(-1)[0].code;
+  await message.channel.send(`https://discord.gg/${discordInvite}`);
+};
 
 const getChat = async () => {
   try {
@@ -111,7 +168,7 @@ const getChat = async () => {
       };
       if (chatMessage.indexOf("[Discord]") >= 0) return;
       if (showLog) console.log(`Message from Ark: ${chatMessage}`);
-      client.channels.cache.get(channelID).send(chatMessage);
+      await client.channels.cache.get(channelID).send(chatMessage);
     }
   } catch (err) {
     console.error(`Error (13). Failed to get chat messages in getChat()! \n${err}`);
@@ -141,8 +198,6 @@ const getGameLog = async () => {
       var gameLogID = `${i}${rconPort}`;
       const delGameLog = async () => {
         try {
-          //tmp
-	  const delOldTable = await axios.get(`${webdisURL}:${webdisPort}/DEL/gameLog-${rconPort}`);
           const delTable = await axios.get(`${webdisURL}:${webdisPort}/DEL/gameLog-${gameLogID}`);
         } catch (err) {
           console.error(`Error (6). Axios failed to delete gameLog table in getTribeLog()! \n${err}`);
@@ -200,7 +255,7 @@ const getTribeLog = async () => {
               var encodedTribeLog = encodeURIComponent(tribeLog);
               try {
                 const sendTribeLog = await axios.get(`${webdisURL}:${webdisPort}/SET/tribeLog-${tribeID}-${tribeRconPort}/${encodedTribeLog}`);
-                client.channels.cache.get(tribeChannelID).send(`[${rconServerName}]: ${tribeLog}`);
+                await client.channels.cache.get(tribeChannelID).send(`[${rconServerName}]: ${tribeLog}`);
                 if (showLog) console.log(`Tribe log: ${tribeLog}`);
               } catch (err) {
                 console.error(`Error (10). Failed to send tribeLog in getTribeLog()! \n${err}`);
@@ -240,7 +295,7 @@ const getAdminCmd = async () => {
               } else {
                 rconAdminCmdChannelID = channelID;
               }
-              client.channels.cache.get(rconAdminCmdChannelID).send(`[${rconServerName}]: ${adminCmdLog}`);
+              await client.channels.cache.get(rconAdminCmdChannelID).send(`[${rconServerName}]: ${adminCmdLog}`);
               if (showLog) console.log(`[${rconServerName}]: AdminCmd log: ${adminCmdLog}`);
             } catch (err) {
               console.error(`Error (15). Failed to send adminCmdLog in getAdminCmd()! \n${err}`);
@@ -280,7 +335,7 @@ const getPlayerNotifications = async () => {
               } else {
                 rconPlayerNotificationsChannelID = channelID;
               }
-              client.channels.cache.get(rconPlayerNotificationsChannelID).send(`[${rconServerName}]: ${playerNotificationsLog.replace(/^.*: /, "")}`);
+              await client.channels.cache.get(rconPlayerNotificationsChannelID).send(`[${rconServerName}]: ${playerNotificationsLog.replace(/^.*: /, "")}`);
               if (showLog) console.log(`[${rconServerName}]: Player Notifications log: ${playerNotificationsLog.replace(/^.*: /, "")}`);
             } catch (err) {
               console.error(`Error (18). Failed to send playerNotificationsLog in getPlayerNotifications()! \n${err}`);

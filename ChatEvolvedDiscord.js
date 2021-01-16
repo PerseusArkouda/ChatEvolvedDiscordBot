@@ -25,7 +25,6 @@ const rconTribes = config.rconTribes;
 
 const client = new Discord.Client();
 
-var gameLogID;
 var antiSpamTotalPlayers;
 var antiSpamChatMessage;
 
@@ -92,16 +91,6 @@ client.on("message", async message => {
   };
 });
 
-function getGameLogID(val) {
-  for (let i = 0, l = rconServers.length; i < l; i++) {
-    gameLogID = rconServers[i].port.toString().match(val);
-    if (gameLogID) {
-      gameLogID = `${i}${gameLogID}`;
-      return gameLogID;
-    }
-  }
-}
-
 const getChat = async () => {
   try {
     var chatMessage = await axios.get(`${webdisURL}:${webdisPort}/LRANGE/${clusterName}/0/1`);
@@ -131,7 +120,7 @@ const getGameLog = async () => {
     for (let i = 0, l = rconServers.length; i < l; i++) {
       var rconServer = rconServers[i].IP;
       var rconPort = rconServers[i].port;
-      gameLogID = getGameLogID(rconPort);
+      var gameLogID = `${i}${rconPort}`;
       const delGameLog = async () => {
         try {
           //tmp
@@ -178,7 +167,8 @@ const getTribeLog = async () => {
       var tribeRconPort = rconTribes[i].tribeRconPort;
       var tribeID = rconTribes[i].tribeID;
       var tribeChannelID = rconTribes[i].tribeChannelID;
-      gameLogID = getGameLogID(tribeRconPort);
+      var rconServerName = rconServers[i].name;
+      var gameLogID = `${i}${rconPort}`;
       try {
         const getTribeLog = await axios.get(`${webdisURL}:${webdisPort}/LRANGE/gameLog-${gameLogID}/0/100`);
         var tribeLog = getTribeLog.data.LRANGE.sort().filter(item => item.indexOf(tribeID) !== -1).slice(-1)[0];
@@ -192,7 +182,7 @@ const getTribeLog = async () => {
               var encodedTribeLog = encodeURIComponent(tribeLog);
               try {
                 const sendTribeLog = await axios.get(`${webdisURL}:${webdisPort}/SET/tribeLog-${tribeID}-${tribeRconPort}/${encodedTribeLog}`);
-                client.channels.cache.get(tribeChannelID).send(tribeLog);
+                client.channels.cache.get(tribeChannelID).send(`[${rconServerName}]: ${tribeLog}`);
                 if (showLog) console.log(`Tribe log: ${tribeLog}`);
               } catch (err) {
                 console.error(`Error (10). Failed to send tribeLog in getTribeLog()! \n${err}`);
@@ -214,19 +204,19 @@ const getAdminCmd = async () => {
     var rconServer = rconServers[i].IP;
     var rconPort = rconServers[i].port;
     var rconServerName = rconServers[i].name;
-    gameLogID = getGameLogID(rconPort);
+    var gameLogID = `${i}${rconPort}`;
     try {
       const getAdminCmdLog = await axios.get(`${webdisURL}:${webdisPort}/LRANGE/gameLog-${gameLogID}/0/100`);
       var adminCmdLog = getAdminCmdLog.data.LRANGE.sort().filter(item => item.indexOf("AdminCmd") !== -1).slice(-1)[0];
       if (adminCmdLog) {
         try {
-          var previousAdminCmdLog = await axios.get(`${webdisURL}:${webdisPort}/GET/lastAdminCmdLog-${rconPort}`);
+          var previousAdminCmdLog = await axios.get(`${webdisURL}:${webdisPort}/GET/lastAdminCmdLog-${gameLogID}`);
           previousAdminCmdLog = previousAdminCmdLog.data.GET;
           if (adminCmdLog !== previousAdminCmdLog) {
             //console.log(`DEBUG: [${rconServerName}]: AdminCmd log: ${adminCmdLog}`);
             var encodedAdminCmdLog = encodeURIComponent(adminCmdLog);
             try {
-              const sendAdminCmdLog = await axios.get(`${webdisURL}:${webdisPort}/SET/lastAdminCmdLog-${rconPort}/${encodedAdminCmdLog}`);
+              const sendAdminCmdLog = await axios.get(`${webdisURL}:${webdisPort}/SET/lastAdminCmdLog-${gameLogID}/${encodedAdminCmdLog}`);
               client.channels.cache.get(rconAdminCmdChannelID).send(`[${rconServerName}]: ${adminCmdLog}`);
               if (showLog) console.log(`[${rconServerName}]: AdminCmd log: ${adminCmdLog}`);
             } catch (err) {
@@ -249,21 +239,21 @@ const getPlayerNotifications = async () => {
     var rconServer = rconServers[i].IP;
     var rconPort = rconServers[i].port;
     var rconServerName = rconServers[i].name;
-    gameLogID = getGameLogID(rconPort);
+    var gameLogID = `${i}${rconPort}`;
     try {
       const getPlayerNotificationsLog = await axios.get(`${webdisURL}:${webdisPort}/LRANGE/gameLog-${gameLogID}/0/100`);
-      var playerNotificationsLog = getPlayerNotificationsLog.data.LRANGE.sort().filter(item => item.indexOf("this ARK!") !== -1).slice(-1)[0].replace(/^.*: /, "");
+      var playerNotificationsLog = getPlayerNotificationsLog.data.LRANGE.sort().filter(item => item.indexOf("this ARK!") !== -1).slice(-1)[0];
       if (playerNotificationsLog) {
         try {
-          var previousPlayerNotificationsLog = await axios.get(`${webdisURL}:${webdisPort}/GET/lastPlayerNotificationsLog-${rconPort}`);
+          var previousPlayerNotificationsLog = await axios.get(`${webdisURL}:${webdisPort}/GET/lastPlayerNotificationsLog-${gameLogID}`);
           previousPlayerNotificationsLog = previousPlayerNotificationsLog.data.GET;
           if (playerNotificationsLog !== previousPlayerNotificationsLog) {
-            //console.log(`DEBUG: [${rconServerName}]: playerNotifications log: ${playerNotificationsLog}`);
+            //console.log(`DEBUG: [${newRconServerName}]: playerNotifications log: ${playerNotificationsLog}`);
             var encodedPlayerNotificationsLog = encodeURIComponent(playerNotificationsLog);
             try {
-              const sendPlayerNotificationsLog = await axios.get(`${webdisURL}:${webdisPort}/SET/lastPlayerNotificationsLog-${rconPort}/${encodedPlayerNotificationsLog}`);
-              client.channels.cache.get(channelID).send(`[${rconServerName}]: ${playerNotificationsLog}`);
-              if (showLog) console.log(`[${rconServerName}]: Player Notifications log: ${playerNotificationsLog}`);
+              const sendPlayerNotificationsLog = await axios.get(`${webdisURL}:${webdisPort}/SET/lastPlayerNotificationsLog-${gameLogID}/${encodedPlayerNotificationsLog}`);
+              client.channels.cache.get(channelID).send(`[${rconServerName}]: ${playerNotificationsLog.replace(/^.*: /, "")}`);
+              if (showLog) console.log(`[${rconServerName}]: Player Notifications log: ${playerNotificationsLog.replace(/^.*: /, "")}`);
             } catch (err) {
               console.error(`Error (18). Failed to send playerNotificationsLog in getPlayerNotifications()! \n${err}`);
             };

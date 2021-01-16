@@ -28,5 +28,10 @@
   "bugs": {
     "url": "https://github.com/PerseusArkouda/ChatEvolvedDiscordBot/issues"
   },
-  "homepage": "https://github.com/PerseusArkouda/ChatEvolvedDiscordBot#readme"
+  "homepage": "https://github.com/PerseusArkouda/ChatEvolvedDiscordBot#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "discord.js": "^12.5.1",
+    "source-rcon-client": "0.0.10"
+  }
 }

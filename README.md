@@ -65,11 +65,6 @@ You should be able to communicate with the configured servers in your cluster no
 https://github.com/git-guides/install-git
 ### 5) Install nodejs
 https://nodejs.org/en/download/
-### 6) Install required npm modules
-Type in terminal/cmd:
-```
-npm install discord.js axios source-rcon-client
-```
 ### 7) Create a Discord Bot
 https://discordpy.readthedocs.io/en/latest/discord.html
 ### 8) Install and run ChatEvolvedDiscordBot

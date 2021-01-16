@@ -25,6 +25,8 @@ const rconTribes = config.rconTribes;
 
 const client = new Discord.Client();
 
+var gamelogID;
+var rconServerName;
 var antiSpamTotalPlayers;
 var antiSpamChatMessage;
 
@@ -116,6 +118,22 @@ const getChat = async () => {
   };
 };
 
+function getServerInfo(rconServer, rconPort, rconServerName) {
+  for (let i = 0, l = rconServers.length; i < l; i++) {
+    var getServerIP = rconServers[i].IP.match(rconServer);
+    var getServerPort = rconServers[i].port.toString().match(rconPort);
+    if (getServerIP && getServerPort) {
+      if (rconServerName) {
+        rconServerName = `${rconServers[i].name}`;
+        return rconServerName;
+      } else {
+        gameLogID = `${i}${getServerPort}`;
+        return gameLogID;
+      }
+    }
+  }
+}
+
 const getGameLog = async () => {
     for (let i = 0, l = rconServers.length; i < l; i++) {
       var rconServer = rconServers[i].IP;
@@ -167,8 +185,7 @@ const getTribeLog = async () => {
       var tribeRconPort = rconTribes[i].tribeRconPort;
       var tribeID = rconTribes[i].tribeID;
       var tribeChannelID = rconTribes[i].tribeChannelID;
-      var rconServerName = rconServers[i].name;
-      var gameLogID = `${i}${rconPort}`;
+      gameLogID = getServerInfo(tribeRconServer, tribeRconPort);
       try {
         const getTribeLog = await axios.get(`${webdisURL}:${webdisPort}/LRANGE/gameLog-${gameLogID}/0/100`);
         var tribeLog = getTribeLog.data.LRANGE.sort().filter(item => item.indexOf(tribeID) !== -1).slice(-1)[0];
@@ -179,6 +196,7 @@ const getTribeLog = async () => {
             previousTribeLog = previousTribeLog.data.GET;
             if (tribeLog !== previousTribeLog) {
               //console.log(`DEBUG: tribeLog for ${tribeRconServer}:${tribeRconPort}: ${tribeLog}`);
+              rconServerName = getServerInfo(tribeRconServer, tribeRconPort, "true");
               var encodedTribeLog = encodeURIComponent(tribeLog);
               try {
                 const sendTribeLog = await axios.get(`${webdisURL}:${webdisPort}/SET/tribeLog-${tribeID}-${tribeRconPort}/${encodedTribeLog}`);

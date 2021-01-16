@@ -18,8 +18,9 @@ const rconServers = config.rcon.rconServers;
 const rconGameLog = config.switches.rconGameLog;
 const rconTopicChange = config.switches.rconTopicChange;
 const rconPlayerNotifications = config.switches.rconPlayerNotifications;
+var rconPlayerNotificationsChannelID = config.rconPlayerNotificationsChannelID;
 const rconAdminCmdLog = config.switches.rconAdminCmdLog;
-const rconAdminCmdChannelID = config.rconAdminCmdChannelID;
+var rconAdminCmdChannelID = config.rconAdminCmdChannelID;
 const rconTribeLog = config.switches.rconTribeLog;
 const rconTribes = config.rconTribes;
 
@@ -27,7 +28,6 @@ const client = new Discord.Client();
 
 var gamelogID;
 var rconServerName;
-var antiSpamTotalPlayers;
 var antiSpamChatMessage;
 
 client.once("ready", () => {
@@ -235,6 +235,11 @@ const getAdminCmd = async () => {
             var encodedAdminCmdLog = encodeURIComponent(adminCmdLog);
             try {
               const sendAdminCmdLog = await axios.get(`${webdisURL}:${webdisPort}/SET/lastAdminCmdLog-${gameLogID}/${encodedAdminCmdLog}`);
+              if (rconAdminCmdChannelID) {
+                rconAdminCmdChannelID = rconAdminCmdChannelID;
+              } else {
+                rconAdminCmdChannelID = channelID;
+              }
               client.channels.cache.get(rconAdminCmdChannelID).send(`[${rconServerName}]: ${adminCmdLog}`);
               if (showLog) console.log(`[${rconServerName}]: AdminCmd log: ${adminCmdLog}`);
             } catch (err) {
@@ -270,7 +275,12 @@ const getPlayerNotifications = async () => {
             var encodedPlayerNotificationsLog = encodeURIComponent(playerNotificationsLog);
             try {
               const sendPlayerNotificationsLog = await axios.get(`${webdisURL}:${webdisPort}/SET/lastPlayerNotificationsLog-${gameLogID}/${encodedPlayerNotificationsLog}`);
-              client.channels.cache.get(channelID).send(`[${rconServerName}]: ${playerNotificationsLog.replace(/^.*: /, "")}`);
+              if (rconPlayerNotificationsChannelID) {
+                rconPlayerNotificationsChannelID = rconPlayerNotificationsChannelID;
+              } else {
+                rconPlayerNotificationsChannelID = channelID;
+              }
+              client.channels.cache.get(rconPlayerNotificationsChannelID).send(`[${rconServerName}]: ${playerNotificationsLog.replace(/^.*: /, "")}`);
               if (showLog) console.log(`[${rconServerName}]: Player Notifications log: ${playerNotificationsLog.replace(/^.*: /, "")}`);
             } catch (err) {
               console.error(`Error (18). Failed to send playerNotificationsLog in getPlayerNotifications()! \n${err}`);
@@ -325,14 +335,8 @@ function getPlayers() {
                 }).reduce(function (a, b) {
                     return a + b;
                 }, 0);
-                if (totalPlayers !== antiSpamTotalPlayers) {
-                    if (showLog) console.log(`Total players in ${clusterName}: ${totalPlayers}`);
-                    antiSpamTotalPlayers = totalPlayers;
-                    client.channels.cache.get(channelID).setTopic(`Current online players in ${clusterName}: ${totalPlayers}`);
-                } else {
-                    if (showLog) console.log(`Total players in ${clusterName}: ${totalPlayers}. Same value with previous check. Skipping update.`);
-                    return;
-                }
+               if (showLog) console.log(`Total players in ${clusterName}: ${totalPlayers}`);
+               client.channels.cache.get(channelID).setTopic(`Current online players in ${clusterName}: ${totalPlayers}`);
             } catch (err) {
                 console.error(`Error (5). Axios failed to set totalPlayers in addRconPlayers()! \n${err}`);
             };

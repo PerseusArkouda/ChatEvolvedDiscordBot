@@ -62,10 +62,14 @@ config.switches.rconGameLog = false;
 config.switches.rconTopicChange = false;
 // Enable/disable player join/left messages to be sent to Discord channel. Optional. Depends on: RCON password, RCON servers, RCON game log.
 config.switches.rconPlayerNotifications = false;
+// Set Discord channel ID if you want separated player notifications from in game chat channel or else leave it blank. Optional.
+//  Depends on: RCON password, RCON servers, RCON game log, RCON player notifications.
+config.rconPlayerNotificationsChannelID = "";
 // Enable/disable Admin command log to be sent to a Discord channel. Optional. Depends on: RCON password, RCON servers, RCON game log.
 config.switches.rconAdminCmdLog = false;
-// Set Discord channel ID for Admin log to be sent. Optional. Depends on: RCON password, RCON servers, RCON game log, Admin command log.
-config.rconAdminCmdChannelID = "my-admin-cmd-log-channel-id";
+// Set Discord channel ID if you want separated Admin log from in game chat channel or else leave it blank. Optional.
+//  Depends on: RCON password, RCON servers, Admin command log.
+config.rconAdminCmdChannelID = "";
 // Enable/disable Discord tribe log feed. Optional. Depends on: RCON password, RCON servers, RCON game log.
 config.switches.rconTribeLog = false;
 // Setup the tribe(s) you want to get tribe log from. Optional. Depends on: RCON password, RCON servers, RCON game log, RCON tribe log.

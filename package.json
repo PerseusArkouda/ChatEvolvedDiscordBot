@@ -28,6 +28,10 @@
   "bugs": {
     "url": "https://github.com/PerseusArkouda/ChatEvolvedDiscordBot/issues"
   },
+  "engines": {
+    "node": ">=11.15.0",
+    "npm": ">=6.7.0"
+  },
   "homepage": "https://github.com/PerseusArkouda/ChatEvolvedDiscordBot#readme",
   "dependencies": {
     "axios": "^0.21.1",

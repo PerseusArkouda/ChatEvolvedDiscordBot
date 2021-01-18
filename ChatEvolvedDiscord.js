@@ -49,7 +49,7 @@ client.once("ready", () => {
   }
 
   if (rconTopicChange) {
-    setInterval(getPlayers, 75000);
+    setInterval(getPlayers, 300000);
   }
 
   if (rconPlayerNotifications) {
@@ -142,12 +142,16 @@ client.on("message", async message => {
 });
 
 const sendDiscordInvite = async (message) => {
-  var invites = await message.guild.fetchInvites();
-  let invitesArray = [];
-  invites.forEach(invite => invitesArray.push({ code: invite.code, uses: invite.uses }));
-  invitesArray.sort((a, b) => { return a.uses - b.uses; });
-  var discordInvite = invitesArray.slice(-1)[0].code;
-  await message.channel.send(`https://discord.gg/${discordInvite}`);
+  try {
+    var invites = await message.guild.fetchInvites();
+    let invitesArray = [];
+    invites.forEach(invite => invitesArray.push({ code: invite.code, uses: invite.uses }));
+    invitesArray.sort((a, b) => { return a.uses - b.uses; });
+    var discordInvite = invitesArray.slice(-1)[0].code;
+    await message.channel.send(`https://discord.gg/${discordInvite}`);
+  } catch (err) {
+    console.error(`Error (21). Failed to send Discord invite in sendDiscordInvite()! \n${err}`);
+  };
 };
 
 const getChat = async () => {

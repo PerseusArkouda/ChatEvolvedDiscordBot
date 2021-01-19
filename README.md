@@ -74,13 +74,9 @@ There you can set your cluster name (servers will use that to talk to each other
 case)  
 Press all Set buttons and check if you have a working cross chat  
 You should be able to communicate with the configured servers in your cluster now
-### 4) Install Git (skip if you have the executable binary of ChatEvolvedDiscord)
-https://github.com/git-guides/install-git
-### 5) Install nodejs (skip if you have the executable binary of ChatEvolvedDiscord)
-https://nodejs.org/en/download/
-### 6) Create a Discord Bot
+### 4) Create a Discord Bot
 https://discordpy.readthedocs.io/en/latest/discord.html
-### 7) Install and run ChatEvolvedDiscordBot
+### 5) Install and run ChatEvolvedDiscordBot
 Get the latest version from here: https://github.com/nvm-sh/ChatEvolvedDiscordBot/releases/latest
 Extract ChatEvolvedDiscord-your_platform.zip and edit config.js. Setup at least the basic config, save and close  
 ```

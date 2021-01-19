@@ -77,7 +77,7 @@ You should be able to communicate with the configured servers in your cluster no
 ### 4) Create a Discord Bot
 https://discordpy.readthedocs.io/en/latest/discord.html
 ### 5) Install and run ChatEvolvedDiscordBot
-Get the latest version from here: https://github.com/nvm-sh/ChatEvolvedDiscordBot/releases/latest  
+Get the latest version from here: https://github.com/PerseusArkouda/ChatEvolvedDiscordBot/releases/latest  
 Extract ChatEvolvedDiscord-your_platform.zip and edit config.js:
 ```
 // The name of your Ark servers cluster. Required.

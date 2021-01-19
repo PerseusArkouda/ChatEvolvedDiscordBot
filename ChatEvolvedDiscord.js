@@ -1,7 +1,15 @@
 const Discord = require("discord.js");
 const axios = require("axios");
 const Rcon = require("source-rcon-client").default;
-const config = require("./config");
+const fs = require("fs");
+const path = require("path");
+const process = require("process");
+let config = require("./config");
+const isNode = process.argv[0].replace(/\.exe/g, "").endsWith("node");
+if (!isNode) {
+  const deployPath = path.dirname(process.execPath);
+  config = require(path.join(deployPath, "config.js"));
+}
 
 const clusterName = config.clusterName;
 const token = config.token;

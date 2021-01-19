@@ -32,10 +32,19 @@ var antiSpamChatMessage;
 
 client.once("ready", () => {
 
+  const checkWebdis = async () => {
+    try {
+      await axios.get(`${webdisURL}:${webdisPort}/SET/hello/world`);
+      await axios.get(`${webdisURL}:${webdisPort}/GET/hello`);
+    } catch (err) {
+      console.error(`Webdis seems not to be installed or not properly configured! \n${err}`);
+      return;
+    };
+  };
+  checkWebdis();
+
   if (setBotActivity) {
-    client.user.setActivity(botActivityMessage, {
-       type: "Type"
-    });
+    setBotActivityMessage();
   }
 
   setInterval(getChat, 300);
@@ -140,6 +149,16 @@ client.on("message", async message => {
     console.error(`Error (14). Axios failed to send chat message in message()! \n${err}`);
   };
 });
+
+const setBotActivityMessage = async () => {
+  try {
+    await client.user.setActivity(botActivityMessage, {
+      type: "Running"
+    });
+  } catch (err) {
+    console.error(`Failed to set bot activity in setBotActivityMessage()! \n${err}`);
+  };
+};
 
 const sendDiscordInvite = async (message) => {
   try {

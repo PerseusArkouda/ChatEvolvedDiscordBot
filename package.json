@@ -4,7 +4,9 @@
   "description": "Discord bot chat integration for Ark mod: Chat Evolved",
   "main": "ChatEvolvedDiscord.js",
   "scripts": {
-    "test": "test"
+    "start": "node ChatEvolvedDiscord.js",
+    "build-win": "nexe -r node_modules// -o win/ChatEvolvedDiscord -t windows-x64-14.15.3",
+    "build-linux": "nexe -r node_modules// -o linux/ChatEvolvedDiscord -t linux-x64-14.15.3"
   },
   "repository": {
     "type": "git",
@@ -36,6 +38,9 @@
   "dependencies": {
     "axios": "^0.21.1",
     "discord.js": "^12.5.1",
-    "source-rcon-client": "0.0.10"
+    "source-rcon-client": "^0.0.10"
+  },
+  "devDependencies": {
+    "nexe": "^4.0.0-beta.16"
   }
 }

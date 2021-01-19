@@ -6,9 +6,9 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=1551199162
 - Added support to compile to executable binary
 - Added precompiled executable binaries to Releases
 - Removed instructions for running from source with node and replaced with the ones for precompiled executable binaries  
-To install yourself: npm install
-To build binary: npm run build-win or npm run build-linux
-To run: npm start
+To install yourself: npm install  
+To build binary: npm run build-win or npm run build-linux  
+To run: npm start  
 
 ## Features
 - It will send/receive messages to/from specified Discord channel back/to your ARK servers 

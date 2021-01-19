@@ -77,8 +77,8 @@ You should be able to communicate with the configured servers in your cluster no
 ### 4) Create a Discord Bot
 https://discordpy.readthedocs.io/en/latest/discord.html
 ### 5) Install and run ChatEvolvedDiscordBot
-Get the latest version from here: https://github.com/nvm-sh/ChatEvolvedDiscordBot/releases/latest
-Extract ChatEvolvedDiscord-your_platform.zip and edit config.js. Setup at least the basic config, save and close  
+Get the latest version from here: https://github.com/nvm-sh/ChatEvolvedDiscordBot/releases/latest  
+Extract ChatEvolvedDiscord-your_platform.zip and edit config.js:
 ```
 // The name of your Ark servers cluster. Required.
 config.clusterName = "my-cluster"
@@ -93,6 +93,7 @@ config.webdis.url = "http://127.0.0.1";
 // The Webdis port. It should be good as is. Required.
 config.webdis.port = "7379";
 ```
+Setup at least the basic config, save and close  
 Type in terminal/cmd (or double click):
 Linux:
 ```

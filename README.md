@@ -6,9 +6,9 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=1551199162
 - Added support to compile to executable binary
 - Added precompiled executable binaries to Releases
 - Removed instructions for running from source with node and replaced with the ones for precompiled executable binaries  
-To install yourself: npm install
-To build binary: npm run build-win or npm run build-linux
-To run: npm start
+To install yourself: npm install  
+To build binary: npm run build-win or npm run build-linux  
+To run: npm start  
 
 ## Features
 - It will send/receive messages to/from specified Discord channel back/to your ARK servers 
@@ -74,15 +74,11 @@ There you can set your cluster name (servers will use that to talk to each other
 case)  
 Press all Set buttons and check if you have a working cross chat  
 You should be able to communicate with the configured servers in your cluster now
-### 4) Install Git (skip if you have the executable binary of ChatEvolvedDiscord)
-https://github.com/git-guides/install-git
-### 5) Install nodejs (skip if you have the executable binary of ChatEvolvedDiscord)
-https://nodejs.org/en/download/
-### 6) Create a Discord Bot
+### 4) Create a Discord Bot
 https://discordpy.readthedocs.io/en/latest/discord.html
-### 7) Install and run ChatEvolvedDiscordBot
-Get the latest version from here: https://github.com/nvm-sh/ChatEvolvedDiscordBot/releases/latest
-Extract ChatEvolvedDiscord-your_platform.zip and edit config.js. Setup at least the basic config, save and close  
+### 5) Install and run ChatEvolvedDiscordBot
+Get the latest version from here: https://github.com/PerseusArkouda/ChatEvolvedDiscordBot/releases/latest  
+Extract ChatEvolvedDiscord-your_platform.zip and edit config.js:
 ```
 // The name of your Ark servers cluster. Required.
 config.clusterName = "my-cluster"
@@ -97,6 +93,7 @@ config.webdis.url = "http://127.0.0.1";
 // The Webdis port. It should be good as is. Required.
 config.webdis.port = "7379";
 ```
+Setup at least the basic config, save and close  
 Type in terminal/cmd (or double click):
 Linux:
 ```

@@ -81,7 +81,7 @@ Get the latest version from here: https://github.com/PerseusArkouda/ChatEvolvedD
 Extract ChatEvolvedDiscord-your_platform.zip and edit config.js:
 ```
 // The name of your Ark servers cluster. Required.
-config.clusterName = "my-cluster"
+config.clusterName = "my-cluster";
 // The Discord bot token. Required.
 config.token = "my-bot-token";
 // Set the prefix to trigger the bot commands

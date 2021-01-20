@@ -16,8 +16,6 @@
     "discord",
     "bot",
     "chat",
-    "chat",
-    "evolved",
     "ark",
     "survival",
     "evolved",
@@ -38,6 +36,9 @@
   "dependencies": {
     "axios": "^0.21.1",
     "discord.js": "^12.5.1",
+    "fs": "0.0.1-security",
+    "path": "^0.12.7",
+    "process": "^0.11.10",
     "source-rcon-client": "0.0.10"
   },
   "devDependencies": {

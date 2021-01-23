@@ -151,6 +151,9 @@ Paste and edit User, Group and ExecStart path with your username:
 ```
     [Unit]
     Description=Chat Evolved Discord Bot
+    Wants=network-online.target
+    After=network-online.target
+
     [Service]
     Type=simple
     Restart=on-failure
@@ -161,6 +164,7 @@ Paste and edit User, Group and ExecStart path with your username:
     Group=USER
     ExecStart=/home/USER/ChatEvolvedDiscordBot/ChatEvolvedDiscord.sh
     WorkingDirectory=/home/USER/ChatEvolvedDiscordBot
+
     [Install]
     WantedBy=multi-user.target
 ```

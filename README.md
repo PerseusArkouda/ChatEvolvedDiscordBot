@@ -1,4 +1,6 @@
 # ChatEvolvedDiscordBot
+## NOTE: This is an unofficial bot and has nothing to do with Chat Evolved mod and it's developer.  
+## Unfortunately I can't run Ark DevKit on my computer and make my own chat widget mod and we can currently work only with that mod.
 Discord integration for ARK's Chat Evolved mod  
 https://steamcommunity.com/sharedfiles/filedetails/?id=1551199162
 

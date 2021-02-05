@@ -138,7 +138,7 @@ client.on("message", async message => {
   }
   // If IgnoreBots is disabled, messages starting with ~ from game chat will trigger the specified bot commands.
   // Returns your most popular Discord invite from the game chat
-  if (message.content.indexOf(`]: ${prefix}discord`) >= 0) {
+  if (message.content.indexOf(`: ${prefix}discord`) >= 0) {
     sendDiscordInvite(message);
     return;
   }

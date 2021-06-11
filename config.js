@@ -17,13 +17,11 @@ config.token = "my-bot-token";
 // Set the prefix to trigger the bot commands
 config.prefix = "~";
 // The Discord channel ID in which the bot will use to send/receive chat messages. Required.
-config.channelID = "my-channel-id"; //official
+config.channelID = "my-channel-id";
 // The Webdis URL. It should be good as is. Required.
 config.webdis.url = "http://127.0.0.1";
 // The Webdis port. It should be good as is. Required.
 config.webdis.port = "7379";
-
-// Extra features config
 // Enable/disable console output for successful processes. Optional.
 config.switches.showLog = true;
 // Enable/disable ability to read other bots messages. Optional.
@@ -32,6 +30,15 @@ config.switches.ignoreBots = true;
 config.switches.setBotActivity = true;
 // Set bot activity status message. Optional. Depends on: Set bot activity.
 config.botActivityMessage = "ChatEvolvedDiscord";
+// Enable/disable word blacklist. Optional.
+config.switches.setBlacklist = true;
+// Set words or phrases for bot to blacklist and ban (requires discord privileges). Optional. Depends on: Word blacklist switch.
+config.blacklist = [
+        "steancommunity.ru",
+        "testingtest"
+];
+
+// Extra features config
 // For RCON features make sure to use ?RCONEnabled=True?RCONPort=<some port> and -servergamelog -servergamelogincludetribelogs
 //  in you ark server's startup command parameters.
 // Set your RCON password. Optional.

@@ -21,6 +21,8 @@ const showLog = config.switches.showLog;
 const ignoreBots = config.switches.ignoreBots;
 const setBotActivity = config.switches.setBotActivity;
 const botActivityMessage = config.botActivityMessage;
+const setBlacklist = config.switches.setBlacklist;
+const blacklist = config.blacklist;
 const rconPassword = config.rcon.password;
 const rconServers = config.rcon.rconServers;
 const rconGameLog = config.switches.rconGameLog;
@@ -51,31 +53,19 @@ client.once("ready", () => {
   };
   checkWebdis();
 
-  if (setBotActivity) {
-    setBotActivityMessage();
-  }
+  if (setBotActivity) setBotActivityMessage();
 
   setInterval(getChat, 300);
 
-  if (rconGameLog) {
-    setInterval(getGameLog, 10000);
-  }
+  if (rconGameLog) setInterval(getGameLog, 10000);
 
-  if (rconTribeLog) {
-    setInterval(getTribeLog, 25000);
-  }
+  if (rconTribeLog) setInterval(getTribeLog, 25000);
 
-  if (rconTopicChange) {
-    setInterval(getPlayers, 300000);
-  }
+  if (rconTopicChange) setInterval(getPlayers, 300000);
 
-  if (rconPlayerNotifications) {
-    setInterval(getPlayerNotifications, 5000);
-  }
+  if (rconPlayerNotifications) setInterval(getPlayerNotifications, 5000);
 
-  if (rconAdminCmdLog) {
-    setInterval(getAdminCmd, 7000);
-  }
+  if (rconAdminCmdLog) setInterval(getAdminCmd, 7000);
 
  console.log("ChatEvolvedDiscord Ready!");
 });
@@ -90,6 +80,13 @@ client.once("disconnect", () => {
 
 client.on("message", async message => {
   if (ignoreBots && message.author.bot) return;
+
+  var user = message.author.username;
+  var tagUser = `<@${message.author.id}>`;
+  var content = message.content;
+
+  if (setBlacklist) getBlacklist(message, tagUser);
+
   // ~test in any channel will return "Testing Ok" from the bot to verify it's running
   if (message.content.startsWith(`${prefix}test`)) {
     await message.channel.send("Testing ok!");
@@ -146,12 +143,21 @@ client.on("message", async message => {
   if (message.channel.id !== channelID) return;
   // Ignores messages starting with [. Useful if ignoreBots is disabled.
   if (message.content.startsWith("[")) return;
-  var user = message.author.username;
   var encodedUser = encodeURIComponent(message.author.username);
-  var content = message.content;
   var encodedContent = encodeURIComponent(message.content);
+  var sessionNameCE = encodeURIComponent(`${clusterName} Discord`);
+  var serverNameCE = encodeURIComponent("Discord");
+  let date = new Date();
+  let epoch = date.getTime() / 1000;
+  let epochString = epoch.toFixed(7);
+  let year = (date.getUTCFullYear());
+  let day = ("0" + date.getUTCDate()).slice(-2);
+  let month = ("0" + (date.getUTCMonth() + 1)).slice(-2);
+  let hours = ("0" + date.getUTCHours()).slice(-2);
+  let minutes = ("0" + date.getUTCMinutes()).slice(-2);
+  let seconds = ("0" + date.getUTCSeconds()).slice(-2);
   try {
-    const sendChatMessage = await axios.get(`${webdisURL}:${webdisPort}/LPUSH/${clusterName}/\<RichColor%20Color=\"0.5,%200.5,%200.5,%201\"\>[Discord]%20\(${encodedUser}\):\<%2F\>%20${encodedContent}`);
+    const sendChatMessage = await axios.get(`${webdisURL}:${webdisPort}/LPUSH/${clusterName}/%7B%22SessionName%22%3A%20%22${sessionNameCE}%22%2C%22Color%22%3A%20%5B%200.5%2C%200.5%2C%200.5%2C%201%20%5D%2C%22Epoch%22%3A%20${epochString}%2C%22Date%22%3A%20%5B%22${year}%22%2C%22${month}%22%2C%22${day}%22%5D%2C%22Timestamp%22%3A%20%5B%22${hours}%22%2C%22${minutes}%22%2C%22${seconds}%22%5D%2C%22ServerName%22%3A%20%22${serverNameCE}%22%2C%22SurvivorName%22%3A%20%22${encodedUser}%22%2C%22TribeName%22%3A%20%22%22%2C%22Message%22%3A%20%22${encodedContent}%22%7D`);
     if (showLog) console.log(`Message from Discord to Ark: ${user}: ${content}`);
   } catch (err) {
     console.error(`Error (14). Axios failed to send chat message in message()! \n${err}`);
@@ -166,6 +172,37 @@ const setBotActivityMessage = async () => {
   } catch (err) {
     console.error(`Failed to set bot activity in setBotActivityMessage()! \n${err}`);
   };
+};
+
+const getBlacklist = async (message, tagUser) => {
+  for (let i = 0, l = blacklist.length; i < l; i++) {
+    var blacklistWord = blacklist[i];
+    if (blacklistWord && message.content.indexOf(blacklistWord) !== -1) {
+      if (message.guild.me.hasPermission("BAN_MEMBERS")) {
+        // by default bans only members without roles. For the rest will send a warning and let admins/mods decide what to do
+        if (message.member.roles.cache.filter(role => role.name !== "@everyone").size <= 0) {
+          try {
+            await message.member.ban();
+            await message.channel.send(`${tagUser} has been banned because the posted message was detected in blacklist.`);
+          } catch (err) {
+            console.error(`Failed to ban member in getBlacklist()! \n${err}`);
+          };
+        } else {
+          try {
+            await message.channel.send(`${tagUser}, your message is detected in blacklist. You have been warned!`);
+          } catch (err) {
+            console.error(`Failed to send a warning to member in getBlacklist()! \n${err}`);
+          };
+        }
+      } else {
+        try {
+          await message.channel.send(`${tagUser}, your message is detected in blacklist but my admin has not given me the privilege to ban you or else I would.`);
+        } catch (err) {
+          console.error(`Failed to send a message to member in getBlacklist()! \n${err}`);
+        };
+      }
+    }
+  }
 };
 
 const sendDiscordInvite = async (message) => {
@@ -184,7 +221,10 @@ const sendDiscordInvite = async (message) => {
 const getChat = async () => {
   try {
     var chatMessage = await axios.get(`${webdisURL}:${webdisPort}/LRANGE/${clusterName}/0/1`);
-    chatMessage = chatMessage.data.LRANGE[0].replace(/,<.*/, "").replace(/<.*\">/, "").replace(/<\/>/, "");
+    chatMessage = chatMessage.data.LRANGE[0];
+    chatMessage = JSON.parse(chatMessage);
+    if (!chatMessage.TribeName) chatMessage.TribeName = "No Tribe";
+    chatMessage = `[${chatMessage.ServerName}] (${chatMessage.SurvivorName}) [${chatMessage.TribeName}]: ${chatMessage.Message}`;
     var previousChatMessage = await axios.get(`${webdisURL}:${webdisPort}/GET/${clusterName}-lastMessage`);
     previousChatMessage = previousChatMessage.data.GET;
     if (chatMessage !== previousChatMessage && chatMessage !== antiSpamChatMessage) {

@@ -9,9 +9,14 @@ Check your webdis.log. I found mine being 22GB in size. You should empty it on r
 https://steamcommunity.com/sharedfiles/filedetails/?id=1551199162
 
 ### News:
+- 18-Jun-21 - Added new feature to blacklist words/phrases. Insta bans (requires privileges) users without roles  
+  and warns the rest. Open config.js and check the blacklist settings.
+- 11-Jun-21 - Patched to support the updated Chat Evolved with Genesis 2 fix. Works best with 0.5 chat interval. 
 - Added support to compile to executable binary
 - Added precompiled executable binaries to Releases
 - Removed instructions for running from source with node and replaced with the ones for precompiled executable binaries  
+
+### Quickstart:
 To install yourself: npm install  
 To build binary: npm run build-win or npm run build-linux  
 To run: npm start  
@@ -72,9 +77,15 @@ Result should be:
 Subscribe: https://steamcommunity.com/sharedfiles/filedetails/?id=1551199162  
 Install the mod both to your client and server and activate the mod  
   
-From the game press enter to open chat and type:
+Add to GameUserSettings.ini an entry similar to this at the end of the file:
 ```
-/settings
+[ChatEvolved]
+BackendURL="http://127.0.0.1:7379"
+ClusterName="My-Cluster-Name"
+ServerName="My-Server-Name"
+GetChatInterval=0.5
+TextColor=0.5,1,1,1
+EnableLogging=false
 ```
 There you can set your cluster name (servers will use that to talk to each other), your current server's name and for Backend edit the default ip with: 127.0.0.1:7379 (or whatever else it is in your 
 case)  

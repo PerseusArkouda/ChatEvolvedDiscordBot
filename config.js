@@ -17,7 +17,7 @@ config.token = "my-bot-token";
 // Set the prefix to trigger the bot commands
 config.prefix = "~";
 // The Discord channel ID in which the bot will use to send/receive chat messages. Required.
-config.channelID = "my-channel-id"; //official
+config.channelID = "my-channel-id";
 // The Webdis URL. It should be good as is. Required.
 config.webdis.url = "http://127.0.0.1";
 // The Webdis port. It should be good as is. Required.

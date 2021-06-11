@@ -9,6 +9,8 @@ Check your webdis.log. I found mine being 22GB in size. You should empty it on r
 https://steamcommunity.com/sharedfiles/filedetails/?id=1551199162
 
 ### News:
+11-Jun-21 - Patched to support the updated Chat Evolved with Genesis 2 fix. Works best with 0.5 chat interval. 
+----
 - Added support to compile to executable binary
 - Added precompiled executable binaries to Releases
 - Removed instructions for running from source with node and replaced with the ones for precompiled executable binaries  

@@ -182,14 +182,16 @@ const getBlacklist = async (message, tagUser) => {
         // by default bans only members without roles. For the rest will send a warning and let admins/mods decide what to do
         if (message.member.roles.cache.filter(role => role.name !== "@everyone").size <= 0) {
           try {
-            await message.member.ban();
+            await message.member.ban({days:1,reason:"Blacklisted content!"});
             await message.channel.send(`${tagUser} has been banned because the posted message was detected in blacklist.`);
+            return;
           } catch (err) {
             console.error(`Failed to ban member in getBlacklist()! \n${err}`);
           };
         } else {
           try {
             await message.channel.send(`${tagUser}, your message is detected in blacklist. You have been warned!`);
+            return;
           } catch (err) {
             console.error(`Failed to send a warning to member in getBlacklist()! \n${err}`);
           };
@@ -197,6 +199,7 @@ const getBlacklist = async (message, tagUser) => {
       } else {
         try {
           await message.channel.send(`${tagUser}, your message is detected in blacklist but my admin has not given me the privilege to ban you or else I would.`);
+          return;
         } catch (err) {
           console.error(`Failed to send a message to member in getBlacklist()! \n${err}`);
         };
